@@ -1,0 +1,6 @@
+{
+  "api_id": 0,
+  "api_hash": "your_api_hash_here",
+  "port": 8080,
+  "session_name": "tg_session"
+}
