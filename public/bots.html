@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bots - TG Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-info h2 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        .page-title {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .add-bot-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-bot-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .add-bot-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-bot-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .add-bot-btn:hover {
+            opacity: 0.9;
+        }
+
+        .add-bot-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .bots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bot-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .bot-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .bot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .bot-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .bot-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-delete {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-copy {
+            background: #5f27cd;
+            color: white;
+        }
+
+        .bot-info {
+            transition: transform 0.2s;
+        }
+
+        .bot-info:hover h3 {
+            color: #667eea;
+            text-decoration: underline;
+        }
+
+        .bot-info h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #333;
+            transition: color 0.2s;
+        }
+
+        .bot-username {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .bot-id {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .bot-token {
+            background: #f7f9fc;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #555;
+            position: relative;
+        }
+
+        .token-hidden {
+            filter: blur(4px);
+            user-select: none;
+        }
+
+        .show-token-btn {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .bot-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .meta-item {
+            font-size: 12px;
+        }
+
+        .meta-label {
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .meta-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .empty-state p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .bots-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="user-section">
+                <div class="avatar" id="avatar">U</div>
+                <div class="user-info">
+                    <h2 id="userName">Loading...</h2>
+                    <p id="userEmail">@username</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="page-title">
+            <h1>🤖 My Telegram Bots</h1>
+            <p>Manage all your Telegram bots in one place</p>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div class="add-bot-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>➕ Add New Bot</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="add-bot-btn" onclick="createNewBot()" style="width: auto; padding: 10px 20px; background: #10ac84;">
+                        ✨ Create New Bot
+                    </button>
+                    <button class="add-bot-btn" onclick="fetchBotsFromTelegram()" style="width: auto; padding: 10px 20px; background: #2AABEE;">
+                        🔄 Fetch My Bots
+                    </button>
+                </div>
+            </div>
+            <form class="add-bot-form" id="addBotForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="botName">Bot Name *</label>
+                        <input type="text" id="botName" required placeholder="My Awesome Bot">
+                    </div>
+                    <div class="form-group">
+                        <label for="botUsername">Bot Username *</label>
+                        <input type="text" id="botUsername" required placeholder="myawesomebot">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="botToken">Bot Token * (from @BotFather)</label>
+                    <input type="text" id="botToken" required placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+                </div>
+                <button type="submit" class="add-bot-btn" id="addBotBtn">Add Bot</button>
+            </form>
+        </div>
+
+        <div class="bots-grid" id="botsGrid">
+            <!-- Bots will be loaded here -->
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">🤖</div>
+            <h3>No Bots Yet</h3>
+            <p>Add your first Telegram bot using the form above</p>
+        </div>
+    </div>
+
+    <script>
+        let userBots = [];
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+        }
+
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user');
+                const data = await response.json();
+
+                if (data.loggedIn && data.user) {
+                    const user = data.user;
+                    const firstName = user.first_name || 'User';
+                    const lastName = user.last_name || '';
+                    const fullName = `${firstName} ${lastName}`.trim();
+                    
+                    document.getElementById('userName').textContent = fullName;
+                    document.getElementById('userEmail').textContent = 
+                        user.username ? `@${user.username}` : `ID: ${user.id}`;
+                    
+                    // Update avatar with photo or initials
+                    const avatarEl = document.getElementById('avatar');
+                    if (user.photoUrl) {
+                        avatarEl.style.backgroundImage = `url(${user.photoUrl})`;
+                        avatarEl.style.backgroundSize = 'cover';
+                        avatarEl.style.backgroundPosition = 'center';
+                        avatarEl.textContent = '';
+                    } else {
+                        avatarEl.textContent = firstName.charAt(0).toUpperCase();
+                    }
+                } else {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+            }
+        }
+
+        async function loadBots() {
+            try {
+                const response = await fetch('/api/bots');
+                const data = await response.json();
+
+                if (data.success) {
+                    userBots = data.bots || [];
+                    renderBots();
+                }
+            } catch (error) {
+                console.error('Failed to load bots:', error);
+            }
+        }
+
+        function renderBots() {
+            const grid = document.getElementById('botsGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (userBots.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            grid.innerHTML = userBots.map(bot => `
+                <div class="bot-card">
+                    <div class="bot-header">
+                        <div class="bot-icon" style="${bot.photoUrl ? `background-image: url(${bot.photoUrl}); background-size: cover; background-position: center;` : ''}">
+                            ${bot.photoUrl ? '' : '🤖'}
+                        </div>
+                        <div class="bot-actions">
+                            ${bot.token ? `
+                                <button class="action-btn btn-copy" onclick="copyToken('${bot.id}')">
+                                    📋 Copy
+                                </button>
+                            ` : ''}
+                            <button class="action-btn btn-delete" onclick="deleteBot('${bot.id}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bot-info" style="cursor: pointer;" onclick="window.location.href='/bot-details.html?id=${bot.id}'">
+                        <h3>${bot.name}</h3>
+                        <div class="bot-username">@${bot.username}</div>
+                        <div class="bot-id">ID: ${bot.id}</div>
+                    </div>
+                    ${bot.token ? `
+                        <div class="bot-token" id="token-${bot.id}">
+                            <span class="token-hidden">${bot.token}</span>
+                            <button class="show-token-btn" onclick="toggleToken('${bot.id}')">
+                                👁️ Show
+                            </button>
+                        </div>
+                    ` : `
+                        <div style="background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 13px; color: #856404;">
+                            ⚠️ No token saved. Add it from @BotFather to manage this bot.
+                        </div>
+                    `}
+                    <div class="bot-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Added</div>
+                            <div class="meta-value">${new Date(bot.addedAt).toLocaleDateString()}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Status</div>
+                            <div class="meta-value">${bot.token ? '✅ Active' : '⚠️ No Token'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleToken(botId) {
+            const tokenEl = document.getElementById(`token-${botId}`);
+            const tokenSpan = tokenEl.querySelector('span');
+            const btn = tokenEl.querySelector('button');
+            
+            if (tokenSpan.classList.contains('token-hidden')) {
+                tokenSpan.classList.remove('token-hidden');
+                btn.innerHTML = '🙈 Hide';
+            } else {
+                tokenSpan.classList.add('token-hidden');
+                btn.innerHTML = '👁️ Show';
+            }
+        }
+
+        async function copyToken(botId) {
+            const bot = userBots.find(b => b.id === botId);
+            if (bot) {
+                try {
+                    await navigator.clipboard.writeText(bot.token);
+                    showStatus('✅ Token copied to clipboard!', 'success');
+                } catch (error) {
+                    showStatus('❌ Failed to copy token', 'error');
+                }
+            }
+        }
+
+        async function deleteBot(botId) {
+            if (!confirm('Are you sure you want to remove this bot?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bots/${botId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('✅ Bot removed successfully', 'success');
+                    loadBots();
+                } else {
+                    showStatus('❌ ' + (result.error || 'Failed to remove bot'), 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        document.getElementById('addBotForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('addBotBtn');
+            btn.disabled = true;
+            btn.textContent = 'Adding...';
+
+            const botData = {
+                name: document.getElementById('botName').value,
+                username: document.getElementById('botUsername').value,
+                token: document.getElementById('botToken').value
+            };
+
+            try {
+                const response = await fetch('/api/bots', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(botData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('✅ Bot added successfully!', 'success');
+                    document.getElementById('addBotForm').reset();
+                    loadBots();
+                } else {
+                    showStatus('❌ ' + (result.error || 'Failed to add bot'), 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Add Bot';
+            }
+        });
+
+        async function logout() {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        async function fetchBotsFromTelegram() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Fetching...';
+            
+            showStatus('🔄 Fetching your bots from Telegram...', 'info');
+
+            try {
+                const response = await fetch('/api/bots/fetch');
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus(`✅ Successfully fetched ${result.fetched} bots from your Telegram account!`, 'success');
+                    loadBots();
+                } else {
+                    showStatus('❌ ' + (result.error || 'Failed to fetch bots'), 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Fetch My Bots';
+            }
+        }
+
+        async function createNewBot() {
+            const botName = prompt('Enter bot display name (e.g., "My Awesome Bot"):');
+            if (!botName || botName.trim() === '') {
+                return;
+            }
+
+            const botUsername = prompt('Enter bot username (without @, must end with "bot"):\nExample: myawesomebot');
+            if (!botUsername || botUsername.trim() === '') {
+                return;
+            }
+
+            // Validate username
+            const cleanUsername = botUsername.trim().toLowerCase().replace(/^@/, '');
+            if (!cleanUsername.endsWith('bot')) {
+                showStatus('❌ Bot username must end with "bot"', 'error');
+                return;
+            }
+
+            if (cleanUsername.length < 5) {
+                showStatus('❌ Bot username must be at least 5 characters', 'error');
+                return;
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Creating...';
+            
+            showStatus('🤖 Creating new bot via @BotFather...', 'info');
+
+            try {
+                const response = await fetch('/api/bots/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name: botName.trim(),
+                        username: cleanUsername
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus(`✅ Bot @${result.bot.username} created successfully! Token: ${result.bot.token.substring(0, 20)}...`, 'success');
+                    loadBots();
+                } else {
+                    showStatus('❌ ' + (result.error || 'Failed to create bot'), 'error');
+                }
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✨ Create New Bot';
+            }
+        }
+
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadBots();
+        });
+    </script>
+</body>
+</html>
