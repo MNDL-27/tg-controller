@@ -42,10 +42,8 @@ app.use(session({
     }
 }));
 
-// IMPORTANT: Replace with your actual bot token from @BotFather
-// This token is used as a SECRET KEY to verify user logins are authentic
-// It's NOT for bot functionality - it's for security verification only
-const BOT_TOKEN = process.env.BOT_TOKEN || 'YOUR_BOT_TOKEN_HERE';
+// BOT_TOKEN no longer needed - using phone authentication instead
+// const BOT_TOKEN = process.env.BOT_TOKEN || 'YOUR_BOT_TOKEN_HERE';
 
 /**
  * Verify Telegram Login Widget data
@@ -1518,39 +1516,11 @@ app.get('/login-widget', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    const botUsername = process.env.BOT_USERNAME || '';
-    const botConfigured = BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE' && botUsername !== '';
-    
     console.log('\n' + '='.repeat(60));
     console.log('🚀 TG Controller Server Started');
     console.log('='.repeat(60));
     console.log(`📍 URL: http://localhost:${PORT}`);
-    console.log(`✅ Status: ${botConfigured ? 'Ready' : 'Configuration Required'}`);
-    
-    if (botConfigured) {
-        console.log(`🤖 Bot: @${botUsername}`);
-        console.log('='.repeat(60));
-        console.log('\n✨ Everything is configured! Open the URL to login.\n');
-    } else {
-        console.log('='.repeat(60));
-        console.log('\n⚠️  SETUP REQUIRED\n');
-        console.log('You need to configure your bot credentials:\n');
-        
-        if (!botUsername) {
-            console.log('❌ BOT_USERNAME not set');
-        }
-        if (BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
-            console.log('❌ BOT_TOKEN not set');
-        }
-        
-        console.log('\n📝 Quick Setup:\n');
-        console.log('1. Create a bot with @BotFather on Telegram (/newbot)');
-        console.log('2. Copy the .env.example file to .env:');
-        console.log('   cp .env.example .env\n');
-        console.log('3. Edit .env and add your credentials:');
-        console.log('   BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz');
-        console.log('   BOT_USERNAME=myloginbot\n');
-        console.log('4. Restart the server: npm start\n');
-        console.log('📖 See QUICK_SETUP.md for detailed instructions\n');
-    }
+    console.log(`✅ Status: Ready`);
+    console.log('='.repeat(60));
+    console.log('\n✨ Everything is configured! Open the URL to login.\n');
 });
