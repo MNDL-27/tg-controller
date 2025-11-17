@@ -1,1135 +1,569 @@
-<!DOCTYPE html><!DOCTYPE html>
-
-<html lang="en"><html lang="en">
-
-<head><head>
-
-    <meta charset="UTF-8">    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Bot Details - TG Controller</title>    <title>Bot Details - TG Controller</title>
-
-        <style>
-
-    <!-- Tailwind CSS CDN -->        * {
-
-    <script src="https://cdn.tailwindcss.com"></script>            margin: 0;
-
-                padding: 0;
-
-    <!-- Tailwind Config (TailAdmin theme) -->            box-sizing: border-box;
-
-    <script>        }
-
-        tailwind.config = {
-
-            theme: {        body {
-
-                extend: {            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-
-                    colors: {            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-                        primary: '#3C50E0',            min-height: 100vh;
-
-                        stroke: '#E2E8F0',            padding: 20px;
-
-                        bodydark: '#6B7280',        }
-
-                        bodydark1: '#9CA3AF',
-
-                        bodydark2: '#8A99AF',        .container {
-
-                        success: '#219653',            max-width: 1400px;
-
-                        danger: '#D34053',            margin: 0 auto;
-
-                        warning: '#FFA70B',        }
-
-                    },
-
-                },        .header {
-
-            },            background: white;
-
-        }            border-radius: 12px;
-
-    </script>            padding: 20px;
-
-</head>            margin-bottom: 20px;
-
-<body class="bg-gray-100">            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-            display: flex;
-
-    <!-- Header -->            justify-content: space-between;
-
-    <header class="sticky top-0 z-999 flex w-full bg-white shadow">            align-items: center;
-
-        <div class="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">        }
-
-            <div class="flex items-center gap-2 sm:gap-4">
-
-                <a href="/bots.html" class="text-bodydark hover:text-primary">← Back</a>        .back-btn {
-
-                <div class="text-2xl font-bold text-black">🤖 TG Controller</div>            padding: 10px 20px;
-
-            </div>            background: #667eea;
-
-        </div>            color: white;
-
-    </header>            border: none;
-
-            border-radius: 8px;
-
-    <!-- Main Content -->            font-size: 14px;
-
-    <main class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">            font-weight: 600;
-
-            cursor: pointer;
-
-        <!-- Loading State -->            text-decoration: none;
-
-        <div id="loading" class="text-center py-20">            display: inline-block;
-
-            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>        }
-
-            <p class="mt-4 text-bodydark">Loading bot details...</p>
-
-        </div>        .back-btn:hover {
-
-            opacity: 0.9;
-
-        <!-- Error State -->        }
-
-        <div id="error" class="hidden rounded-sm border border-danger bg-danger bg-opacity-10 p-6 text-center">
-
-            <div class="text-6xl mb-4">❌</div>        .bot-header-section {
-
-            <p class="text-danger font-medium" id="errorMessage">Failed to load bot</p>            background: white;
-
-        </div>            border-radius: 12px;
-
-            padding: 30px;
-
-        <!-- Content -->            margin-bottom: 20px;
-
-        <div id="content" class="hidden">            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-            display: flex;
-
-            <!-- Bot Header Card -->            gap: 25px;
-
-            <div class="rounded-sm border border-stroke bg-white shadow-default mb-6">            align-items: start;
-
-                <div class="p-7">        }
-
-                    <div class="flex flex-col md:flex-row gap-6 items-start">
-
-                        <!-- Bot Avatar -->        .bot-avatar {
-
-                        <div id="botAvatar" class="h-24 w-24 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-4xl flex-shrink-0">            width: 100px;
-
-                            🤖            height: 100px;
-
-                        </div>            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-                                    border-radius: 20px;
-
-                        <!-- Bot Info -->            display: flex;
-
-                        <div class="flex-1">            align-items: center;
-
-                            <h1 id="botName" class="text-3xl font-bold text-black mb-2">Loading...</h1>            justify-content: center;
-
-                            <p id="botUsername" class="text-lg text-primary mb-1">@...</p>            font-size: 48px;
-
-                            <p id="botId" class="text-sm text-bodydark">ID: ...</p>            flex-shrink: 0;
-
-                                    }
-
-                            <!-- Bot Status Badge -->
-
-                            <div class="mt-4">        .bot-info-main {
-
-                                <span id="botStatus" class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">            flex: 1;
-
-                                    Active        }
-
-                                </span>
-
-                            </div>        .bot-info-main h1 {
-
-                        </div>            font-size: 32px;
-
-            margin-bottom: 10px;
-
-                        <!-- Action Buttons -->        }
-
-                        <div class="flex flex-col gap-3">
-
-                            <button        .bot-username {
-
-                                id="refreshBtn"            color: #667eea;
-
-                                onclick="refreshStats()"            font-size: 18px;
-
-                                class="inline-flex items-center justify-center rounded border border-primary bg-primary py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"            margin-bottom: 5px;
-
-                            >        }
-
-                                🔄 Refresh Stats
-
-                            </button>        .bot-id {
-
-                            <button            color: #999;
-
-                                id="toggleMonitoringBtn"            font-size: 14px;
-
-                                onclick="toggleMonitoring()"        }
-
-                                class="inline-flex items-center justify-center rounded border border-stroke py-2 px-6 text-center font-medium text-black hover:shadow-1"
-
-                            >        .bot-token-section {
-
-                                Stop Monitoring            background: #f7f9fc;
-
-                            </button>            padding: 15px;
-
-                        </div>            border-radius: 8px;
-
-                    </div>            margin-top: 15px;
-
-            font-family: 'Courier New', monospace;
-
-                    <!-- Bot Token (Collapsible) -->            font-size: 13px;
-
-                    <div class="mt-6 rounded border border-stroke bg-gray-50 p-4">            position: relative;
-
-                        <div class="flex items-center justify-between">        }
-
-                            <span class="text-sm font-medium text-black">Bot Token:</span>
-
-                            <button onclick="toggleToken()" class="text-primary hover:underline text-sm">        .token-hidden {
-
-                                <span id="tokenToggle">Show</span>            filter: blur(4px);
-
-                            </button>            user-select: none;
-
-                        </div>        }
-
-                        <p id="botToken" class="text-sm text-bodydark mt-2 font-mono" style="display: none;">
-
-                            ••••••••••••••••••••        .action-buttons {
-
-                        </p>            display: flex;
-
-                    </div>            gap: 10px;
-
-            margin-top: 15px;
-
-                    <!-- Bot Metadata -->        }
-
-                    <div class="mt-6 grid grid-cols-2 gap-4 text-sm">
-
-                        <div>        .btn {
-
-                            <span class="text-bodydark">Created:</span>            padding: 10px 20px;
-
-                            <span id="botCreated" class="block text-black font-medium">...</span>            border: none;
-
-                        </div>            border-radius: 8px;
-
-                        <div>            font-size: 14px;
-
-                            <span class="text-bodydark">Verified:</span>            font-weight: 600;
-
-                            <span id="botVerified" class="block text-black font-medium">...</span>            cursor: pointer;
-
-                        </div>            transition: opacity 0.2s;
-
-                    </div>        }
-
-                </div>
-
-            </div>        .btn:hover {
-
-            opacity: 0.8;
-
-            <!-- Stats Grid -->        }
-
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 mb-6">
-
-                <!-- Total Users -->        .btn-primary {
-
-                <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default">            background: #667eea;
-
-                    <div class="flex items-end justify-between">            color: white;
-
-                        <div>        }
-
-                            <h4 class="text-title-md font-bold text-black" id="statUsers">0</h4>
-
-                            <span class="text-sm font-medium">Total Users</span>        .btn-success {
-
-                        </div>            background: #10ac84;
-
-                        <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">            color: white;
-
-                            <span class="text-2xl">👥</span>        }
-
-                        </div>
-
-                    </div>        .btn-danger {
-
-                </div>            background: #ff4757;
-
-            color: white;
-
-                <!-- Total Messages -->        }
-
-                <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default">
-
-                    <div class="flex items-end justify-between">        .stats-grid {
-
-                        <div>            display: grid;
-
-                            <h4 class="text-title-md font-bold text-black" id="statMessages">0</h4>            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
-                            <span class="text-sm font-medium">Total Messages</span>            gap: 20px;
-
-                        </div>            margin-bottom: 20px;
-
-                        <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">        }
-
-                            <span class="text-2xl">💬</span>
-
-                        </div>        .stat-card {
-
-                    </div>            background: white;
-
-                </div>            border-radius: 12px;
-
-            padding: 25px;
-
-                <!-- Sent Messages -->            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-                <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default">        }
-
-                    <div class="flex items-end justify-between">
-
-                        <div>        .stat-icon {
-
-                            <h4 class="text-title-md font-bold text-black" id="statSentMessages">0</h4>            width: 50px;
-
-                            <span class="text-sm font-medium">Sent Messages</span>            height: 50px;
-
-                        </div>            border-radius: 12px;
-
-                        <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">            display: flex;
-
-                            <span class="text-2xl">📤</span>            align-items: center;
-
-                        </div>            justify-content: center;
-
-                    </div>            font-size: 24px;
-
-                </div>            margin-bottom: 15px;
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Details - TG Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-                <!-- Commands Used -->
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-                <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default">        .stat-icon.blue {
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-                    <div class="flex items-end justify-between">            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-                        <div>        }
+        .back-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
 
-                            <h4 class="text-title-md font-bold text-black" id="statCommands">0</h4>
+        .back-btn:hover {
+            opacity: 0.9;
+        }
 
-                            <span class="text-sm font-medium">Commands Used</span>        .stat-icon.green {
+        .bot-header-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 25px;
+            align-items: start;
+        }
 
-                        </div>            background: linear-gradient(135deg, #10ac84 0%, #06d6a0 100%);
+        .bot-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            flex-shrink: 0;
+        }
 
-                        <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">        }
+        .bot-info-main {
+            flex: 1;
+        }
 
-                            <span class="text-2xl">⚡</span>
+        .bot-info-main h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
 
-                        </div>        .stat-icon.orange {
+        .bot-username {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
 
-                    </div>            background: linear-gradient(135deg, #f79e1b 0%, #f59e0b 100%);
+        .bot-id {
+            color: #999;
+            font-size: 14px;
+        }
 
-                </div>        }
+        .bot-token-section {
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            position: relative;
+        }
 
-            </div>
+        .token-hidden {
+            filter: blur(4px);
+            user-select: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-success {
+            background: #10ac84;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, #10ac84 0%, #06d6a0 100%);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, #f79e1b 0%, #f59e0b 100%);
+        }
 
         .stat-icon.red {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+        }
 
-            <!-- Channels & Groups Section -->            background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+        .stat-label {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
 
-            <div class="rounded-sm border border-stroke bg-white shadow-default mb-6">        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
 
-                <div class="border-b border-stroke py-4 px-7">
+        .stat-description {
+            color: #666;
+            font-size: 12px;
+            margin-top: 8px;
+        }
 
-                    <h3 class="font-medium text-black">        .stat-label {
-
-                        Channels & Groups            color: #999;
-
-                    </h3>            font-size: 14px;
-
-                </div>            margin-bottom: 8px;
-
-                        }
-
-                <div class="p-7">
-
-                    <!-- Chats Stats Summary -->        .stat-value {
-
-                    <div id="chatsStats" class="grid grid-cols-3 gap-4 mb-6">            font-size: 32px;
-
-                        <div class="text-center p-4 rounded bg-gray-50">            font-weight: bold;
-
-                            <div class="text-2xl font-bold text-primary" id="channelsCount">0</div>            color: #333;
-
-                            <div class="text-sm text-bodydark">Channels</div>        }
-
-                        </div>
-
-                        <div class="text-center p-4 rounded bg-gray-50">        .stat-description {
-
-                            <div class="text-2xl font-bold text-success" id="groupsCount">0</div>            color: #666;
-
-                            <div class="text-sm text-bodydark">Groups</div>            font-size: 12px;
-
-                        </div>            margin-top: 8px;
-
-                        <div class="text-center p-4 rounded bg-gray-50">        }
-
-                            <div class="text-2xl font-bold text-warning" id="privateCount">0</div>
-
-                            <div class="text-sm text-bodydark">Private Chats</div>        .chart-section {
-
-                        </div>            background: white;
-
-                    </div>            border-radius: 12px;
-
+        .chart-section {
+            background: white;
+            border-radius: 12px;
             padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-                    <!-- Loading -->            margin-bottom: 20px;
-
-                    <div id="chatsLoading" class="text-center py-10">            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary"></div>        }
-
-                        <p class="mt-4 text-bodydark">Loading chats...</p>
-
-                    </div>        .chart-section h3 {
-
+        .chart-section h3 {
             font-size: 20px;
+            margin-bottom: 20px;
+        }
 
-                    <!-- Chats Lists -->            margin-bottom: 20px;
+        .updates-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-                    <div id="chatsContent" class="hidden">        }
+        .updates-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
 
-                        <!-- Channels -->
-
-                        <div id="channelsList" class="mb-6">        .updates-section {
-
-                            <h4 class="text-lg font-semibold text-black mb-3">📢 Channels</h4>            background: white;
-
-                            <div id="channelsContainer" class="space-y-2">            border-radius: 12px;
-
-                                <!-- Channels will be rendered here -->            padding: 25px;
-
-                            </div>            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-                        </div>        }
-
-
-
-                        <!-- Groups -->        .updates-section h3 {
-
-                        <div id="groupsList" class="mb-6">            font-size: 20px;
-
-                            <h4 class="text-lg font-semibold text-black mb-3">👥 Groups</h4>            margin-bottom: 20px;
-
-                            <div id="groupsContainer" class="space-y-2">        }
-
-                                <!-- Groups will be rendered here -->
-
-                            </div>        .update-item {
-
-                        </div>            padding: 15px;
-
+        .update-item {
+            padding: 15px;
             border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            gap: 15px;
+        }
 
-                        <!-- Private Chats -->            display: flex;
-
-                        <div id="privateList">            gap: 15px;
-
-                            <h4 class="text-lg font-semibold text-black mb-3">💬 Private Chats</h4>        }
-
-                            <div id="privateContainer" class="space-y-2">
-
-                                <!-- Private chats will be rendered here -->        .update-item:last-child {
-
-                            </div>            border-bottom: none;
-
-                        </div>        }
-
-                    </div>
+        .update-item:last-child {
+            border-bottom: none;
+        }
 
         .update-icon {
-
-                    <!-- Empty State -->            width: 40px;
-
-                    <div id="chatsEmpty" class="hidden text-center py-10">            height: 40px;
-
-                        <div class="text-4xl mb-3">📭</div>            border-radius: 8px;
-
-                        <p class="text-bodydark">No channels or groups found</p>            background: #f7f9fc;
-
-                    </div>            display: flex;
-
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #f7f9fc;
+            display: flex;
             align-items: center;
-
-                    <!-- Error State -->            justify-content: center;
-
-                    <div id="chatsError" class="hidden text-center py-10">            font-size: 20px;
-
-                        <div class="text-4xl mb-3">⚠️</div>            flex-shrink: 0;
-
-                        <p class="text-danger">Failed to load chats</p>        }
-
-                    </div>
-
-                </div>        .update-content {
-
-            </div>            flex: 1;
-
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
         }
 
-            <!-- Recent Activity -->
+        .update-content {
+            flex: 1;
+        }
 
-            <div class="rounded-sm border border-stroke bg-white shadow-default">        .update-type {
+        .update-type {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
 
-                <div class="border-b border-stroke py-4 px-7">            font-weight: 600;
+        .update-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
 
-                    <h3 class="font-medium text-black">            color: #333;
+        .update-time {
+            color: #999;
+            font-size: 12px;
+        }
 
-                        Recent Activity            margin-bottom: 4px;
-
-                    </h3>        }
-
-                </div>
-
-                        .update-text {
-
-                <div class="p-7">            color: #666;
-
-                    <div id="activityList" class="space-y-4">            font-size: 14px;
-
-                        <div class="flex items-center gap-4 border-l-4 border-primary pl-4 py-2">            margin-bottom: 4px;
-
-                            <div class="text-2xl">✅</div>        }
-
-                            <div class="flex-1">
-
-                                <p class="text-black font-medium">Bot is actively monitoring</p>        .update-time {
-
-                                <p class="text-sm text-bodydark">Real-time tracking enabled</p>            color: #999;
-
-                            </div>            font-size: 12px;
-
-                            <span class="text-xs text-bodydark">Just now</span>        }
-
-                        </div>
-
-                    </div>        .loading {
-
-                </div>            text-align: center;
-
-            </div>            padding: 40px;
-
+        .loading {
+            text-align: center;
+            padding: 40px;
             color: white;
-
-        </div>            font-size: 18px;
-
+            font-size: 18px;
         }
-
-    </main>
 
         .error {
-
-    <script>            background: #ff4757;
-
-        let currentBot = null;            color: white;
-
-        let tokenVisible = false;            padding: 15px 20px;
-
-        let isMonitoring = true;            border-radius: 8px;
-
+            background: #ff4757;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
-
-        // Get bot ID from URL        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-
-        const botId = urlParams.get('id');        .status-badge {
-
-            display: inline-block;
-
-        if (!botId) {            padding: 6px 12px;
-
-            showError('No bot ID provided');            border-radius: 20px;
-
-        } else {            font-size: 12px;
-
-            loadBotDetails();            font-weight: 600;
-
-        }            margin-top: 10px;
-
         }
 
-        // Toast notification system
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
 
-        function showToast(message, type = 'info') {        .status-active {
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
 
-            const colors = {            background: #d4edda;
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
 
-                success: '#219653',            color: #155724;
+        .refresh-btn {
+            background: #2AABEE;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
 
-                error: '#D34053',        }
+        .refresh-btn:hover:not(:disabled) {
+            background: #1a9bd7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(42, 171, 238, 0.3);
+        }
 
-                info: '#3C50E0',
+        .refresh-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
-                warning: '#FFA70B'        .status-inactive {
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/bots.html" class="back-btn">← Back to Bots</a>
+            <div style="display: flex; gap: 10px;">
+                <button class="refresh-btn" id="monitorBtn" onclick="toggleMonitoring()" style="background: #10ac84;">
+                    📡 Start Monitoring
+                </button>
+                <button class="refresh-btn" id="refreshBtn" onclick="refreshStats()">🔄 Refresh Stats</button>
+            </div>
+        </div>
 
-            };            background: #f8d7da;
+        <div id="loading" class="loading">Loading bot details...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="content" style="display: none;">
+            <!-- Bot Header -->
+            <div class="bot-header-section">
+                <div class="bot-avatar" id="botAvatar">🤖</div>
+                <div class="bot-info-main">
+                    <h1 id="botName">Bot Name</h1>
+                    <div class="bot-username" id="botUsername">@username</div>
+                    <div class="bot-id" id="botId">ID: 123456789</div>
+                    <span class="status-badge status-active" id="botStatus">● Active</span>
+                    <div class="bot-token-section" id="tokenSection">
+                        <span class="token-hidden" id="botToken">token_here</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="toggleToken()">👁️ Show Token</button>
+                        <button class="btn btn-success" onclick="copyToken()">📋 Copy Token</button>
+                        <button class="btn btn-primary" onclick="openBotLink()">🔗 Open in Telegram</button>
+                    </div>
+                </div>
+            </div>
 
-                        color: #721c24;
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">👥</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="statUsers">0</div>
+                    <div class="stat-description" id="statUsersDesc">From recent updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">💬</div>
+                    <div class="stat-label">Messages Received</div>
+                    <div class="stat-value" id="statMessages">0</div>
+                    <div class="stat-description" id="statMessagesDesc">From recent updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">📤</div>
+                    <div class="stat-label">Messages Sent</div>
+                    <div class="stat-value" id="statSentMessages">~0</div>
+                    <div class="stat-description" id="statSentDesc">Estimated replies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">🔥</div>
+                    <div class="stat-label">Commands Used</div>
+                    <div class="stat-value" id="statCommands">0</div>
+                    <div class="stat-description" id="statCommandsDesc">From recent updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">📢</div>
+                    <div class="stat-label">Channel Posts</div>
+                    <div class="stat-value" id="statChannelPosts">0</div>
+                    <div class="stat-description" id="statChannelDesc">Tracked posts to channels</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">📁</div>
+                    <div class="stat-label">Files Sent</div>
+                    <div class="stat-value" id="statFilesSent">0</div>
+                    <div class="stat-description" id="statFilesDesc">Tracked file uploads</div>
+                </div>
+            </div>
 
-            const toast = document.createElement('div');        }
+            <!-- Bot Info Section -->
+            <div class="chart-section">
+                <h3>📊 Bot Information</h3>
+                <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #0c5460; border: 1px solid #bee5eb;">
+                    💡 <strong>Auto-Monitoring Available!</strong><br>
+                    • Click "<strong>📡 Start Monitoring</strong>" above to automatically track all bot activity<br>
+                    • Monitors channel posts, messages, and file uploads in real-time<br>
+                    • No bot code modification needed - works with any bot (including TelDrive)<br>
+                    • Once monitoring starts, statistics will be accurate and real-time<br>
+                    • Monitoring runs in the background and continues until stopped
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <div class="stat-label">Created</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botCreated">-</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Bot Type</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botType">Private Bot</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Verified</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botVerified">No</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Webhook Status</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="webhookStatus">Not Set</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Last Update Time</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="lastUpdateTime">-</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Stats Time Range</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="statsTimeRange">Recent activity only</div>
+                    </div>
+                </div>
+            </div>
 
-            toast.textContent = message;
+            <!-- Channels and Groups Section -->
+            <div class="updates-section" style="margin-bottom: 20px;">
+                <h3>🏢 Channels & Groups</h3>
+                <div id="chatsLoading" style="text-align: center; padding: 20px; color: #999;">
+                    Loading chats...
+                </div>
+                <div id="chatsContent" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                            <div style="font-size: 24px; font-weight: bold; color: #667eea;" id="channelCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Channels</div>
+                        </div>
+                        <div style="background: #f0fff4; padding: 15px; border-radius: 8px; border-left: 4px solid #48bb78;">
+                            <div style="font-size: 24px; font-weight: bold; color: #48bb78;" id="groupCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Groups</div>
+                        </div>
+                        <div style="background: #fef5e7; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12;">
+                            <div style="font-size: 24px; font-weight: bold; color: #f39c12;" id="totalChatsCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Total Chats</div>
+                        </div>
+                    </div>
+                    <div id="chatsList"></div>
+                    <div id="noChats" style="text-align: center; padding: 30px; color: #999; display: none;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                        <div>No channels or groups found in recent updates</div>
+                        <div style="font-size: 13px; margin-top: 8px;">Add this bot to channels/groups or start monitoring to track them</div>
+                    </div>
+                </div>
+            </div>
 
-            toast.style.cssText = `        .refresh-btn {
+            <!-- Recent Updates -->
+            <div class="updates-section">
+                <h3>📱 Recent Updates</h3>
+                <div id="recentUpdates">
+                    <div class="update-item">
+                        <div class="update-icon">📊</div>
+                        <div class="update-content">
+                            <div class="update-type">No recent activity</div>
+                            <div class="update-text">Updates will appear here when users interact with your bot</div>
+                            <div class="update-time">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                position: fixed;            background: #2AABEE;
+    <script>
+        let currentBot = null;
+        let tokenVisible = false;
 
-                bottom: 20px;            color: white;
+        // Get bot ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const botId = urlParams.get('id');
 
-                right: 20px;            padding: 8px 16px;
-
-                background: ${colors[type] || colors.info};            border: none;
-
-                color: white;            border-radius: 6px;
-
-                padding: 15px 20px;            cursor: pointer;
-
-                border-radius: 8px;            font-size: 14px;
-
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);            transition: all 0.3s ease;
-
-                z-index: 10000;            font-weight: 600;
-
-                animation: slideIn 0.3s ease;        }
-
-                max-width: 300px;
-
-            `;        .refresh-btn:hover:not(:disabled) {
-
-                        background: #1a9bd7;
-
-            document.body.appendChild(toast);            transform: translateY(-2px);
-
-                        box-shadow: 0 4px 8px rgba(42, 171, 238, 0.3);
-
-            setTimeout(() => {        }
-
-                toast.style.animation = 'slideOut 0.3s ease';
-
-                setTimeout(() => toast.remove(), 300);        .refresh-btn:disabled {
-
-            }, 3000);            opacity: 0.7;
-
-        }            cursor: not-allowed;
-
+        if (!botId) {
+            showError('No bot ID provided');
+        } else {
+            loadBotDetails();
         }
 
         function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = '❌ ' + message;
+            document.getElementById('error').style.display = 'block';
+        }
 
-            document.getElementById('loading').style.display = 'none';        @keyframes spin {
+        async function loadBotDetails() {
+            try {
+                const response = await fetch(`/api/bots/${botId}`);
+                const data = await response.json();
 
-            document.getElementById('error').classList.remove('hidden');            from { transform: rotate(0deg); }
-
-            document.getElementById('errorMessage').textContent = message;            to { transform: rotate(360deg); }
-
-        }        }
-
-    </style>
-
-        async function loadBotDetails() {</head>
-
-            try {<body>
-
-                const response = await fetch(`/api/bots/${botId}`);    <div class="container">
-
-                const data = await response.json();        <div class="header">
-
-            <a href="/bots.html" class="back-btn">← Back to Bots</a>
-
-                if (data.success && data.bot) {            <div style="display: flex; gap: 10px;">
-
-                    currentBot = data.bot;                <button class="refresh-btn" id="monitorBtn" onclick="toggleMonitoring()" style="background: #10ac84;">
-
-                    renderBot();                    📡 Start Monitoring
-
-                    await loadBotStats();                </button>
-
-                    await loadBotChats();                <button class="refresh-btn" id="refreshBtn" onclick="refreshStats()">🔄 Refresh Stats</button>
-
-                } else {            </div>
-
-                    showError(data.error || 'Bot not found');        </div>
-
+                if (data.success && data.bot) {
+                    currentBot = data.bot;
+                    renderBot();
+                    loadBotStats();
+                    loadBotChats();
+                } else {
+                    showError(data.error || 'Bot not found');
                 }
-
-            } catch (error) {        <div id="loading" class="loading">Loading bot details...</div>
-
-                showError('Failed to load bot details: ' + error.message);        <div id="error" class="error" style="display: none;"></div>
-
-            }        <div id="content" style="display: none;">
-
-        }            <!-- Bot Header -->
-
-            <div class="bot-header-section">
-
-        function renderBot() {                <div class="bot-avatar" id="botAvatar">🤖</div>
-
-            document.getElementById('loading').style.display = 'none';                <div class="bot-info-main">
-
-            document.getElementById('content').classList.remove('hidden');                    <h1 id="botName">Bot Name</h1>
-
-                    <div class="bot-username" id="botUsername">@username</div>
-
-            // Update bot header                    <div class="bot-id" id="botId">ID: 123456789</div>
-
-            document.getElementById('botName').textContent = currentBot.name || currentBot.firstName || 'Bot';                    <span class="status-badge status-active" id="botStatus">● Active</span>
-
-            document.getElementById('botUsername').textContent = '@' + currentBot.username;                    <div class="bot-token-section" id="tokenSection">
-
-            document.getElementById('botId').textContent = 'ID: ' + currentBot.id;                        <span class="token-hidden" id="botToken">token_here</span>
-
-            document.getElementById('botToken').textContent = currentBot.token || 'No token available';                    </div>
-
-            document.getElementById('botCreated').textContent = currentBot.addedAt ? new Date(currentBot.addedAt).toLocaleString() : 'Unknown';                    <div class="action-buttons">
-
-            document.getElementById('botVerified').textContent = currentBot.isVerified ? 'Yes ✓' : 'No';                        <button class="btn btn-primary" onclick="toggleToken()">👁️ Show Token</button>
-
-                        <button class="btn btn-success" onclick="copyToken()">📋 Copy Token</button>
-
-            // Update avatar                        <button class="btn btn-primary" onclick="openBotLink()">🔗 Open in Telegram</button>
-
-            const avatarEl = document.getElementById('botAvatar');                    </div>
-
-            if (currentBot.photo) {                </div>
-
-                const img = document.createElement('img');            </div>
-
-                img.src = currentBot.photo;
-
-                img.alt = currentBot.username;            <!-- Statistics Grid -->
-
-                img.className = 'h-full w-full rounded-full object-cover';            <div class="stats-grid">
-
-                avatarEl.innerHTML = '';                <div class="stat-card">
-
-                avatarEl.appendChild(img);                    <div class="stat-icon blue">👥</div>
-
-            }                    <div class="stat-label">Total Users</div>
-
-                    <div class="stat-value" id="statUsers">0</div>
-
-            // Update status badge                    <div class="stat-description" id="statUsersDesc">From recent updates</div>
-
-            const statusBadge = document.getElementById('botStatus');                </div>
-
-            if (currentBot.isActive) {                <div class="stat-card">
-
-                statusBadge.className = 'inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success';                    <div class="stat-icon green">💬</div>
-
-                statusBadge.textContent = '● Active';                    <div class="stat-label">Messages Received</div>
-
-                isMonitoring = true;                    <div class="stat-value" id="statMessages">0</div>
-
-                document.getElementById('toggleMonitoringBtn').textContent = 'Stop Monitoring';                    <div class="stat-description" id="statMessagesDesc">From recent updates</div>
-
-            } else {                </div>
-
-                statusBadge.className = 'inline-flex rounded-full bg-bodydark bg-opacity-10 py-1 px-3 text-sm font-medium text-bodydark';                <div class="stat-card">
-
-                statusBadge.textContent = '○ Inactive';                    <div class="stat-icon orange">📤</div>
-
-                isMonitoring = false;                    <div class="stat-label">Messages Sent</div>
-
-                document.getElementById('toggleMonitoringBtn').textContent = 'Start Monitoring';                    <div class="stat-value" id="statSentMessages">~0</div>
-
-            }                    <div class="stat-description" id="statSentDesc">Estimated replies</div>
-
-                </div>
-
-            // Update page title                <div class="stat-card">
-
-            document.title = `${currentBot.name || currentBot.username} - Bot Details`;                    <div class="stat-icon red">🔥</div>
-
-        }                    <div class="stat-label">Commands Used</div>
-
-                    <div class="stat-value" id="statCommands">0</div>
-
-        async function refreshStats() {                    <div class="stat-description" id="statCommandsDesc">From recent updates</div>
-
-            const btn = document.getElementById('refreshBtn');                </div>
-
-            btn.disabled = true;                <div class="stat-card">
-
-            btn.innerHTML = '<span class="inline-block animate-spin">⟳</span> Refreshing...';                    <div class="stat-icon blue">📢</div>
-
-                                <div class="stat-label">Channel Posts</div>
-
-            await loadBotStats();                    <div class="stat-value" id="statChannelPosts">0</div>
-
-            await loadBotChats();                    <div class="stat-description" id="statChannelDesc">Tracked posts to channels</div>
-
-                            </div>
-
-            showToast('Stats refreshed successfully', 'success');                <div class="stat-card">
-
-            btn.disabled = false;                    <div class="stat-icon green">📁</div>
-
-            btn.innerHTML = '🔄 Refresh Stats';                    <div class="stat-label">Files Sent</div>
-
-        }                    <div class="stat-value" id="statFilesSent">0</div>
-
-                    <div class="stat-description" id="statFilesDesc">Tracked file uploads</div>
-
-        async function loadBotStats() {                </div>
-
-            try {            </div>
-
-                const response = await fetch(`/api/bots/${botId}/stats`);
-
-                const data = await response.json();            <!-- Bot Info Section -->
-
-            <div class="chart-section">
-
-                if (data.success) {                <h3>📊 Bot Information</h3>
-
-                    const stats = data.stats;                <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #0c5460; border: 1px solid #bee5eb;">
-
-                                        💡 <strong>Auto-Monitoring Available!</strong><br>
-
-                    document.getElementById('statUsers').textContent = stats.totalUsers || 0;                    • Click "<strong>📡 Start Monitoring</strong>" above to automatically track all bot activity<br>
-
-                    document.getElementById('statMessages').textContent = stats.totalMessages || 0;                    • Monitors channel posts, messages, and file uploads in real-time<br>
-
-                    document.getElementById('statSentMessages').textContent = stats.usingEstimatedData ? '~' + (stats.sentMessages || 0) : (stats.sentMessages || 0);                    • No bot code modification needed - works with any bot (including TelDrive)<br>
-
-                    document.getElementById('statCommands').textContent = stats.commandsUsed || 0;                    • Once monitoring starts, statistics will be accurate and real-time<br>
-
-                } else {                    • Monitoring runs in the background and continues until stopped
-
-                    console.error('Failed to load stats:', data.error);                </div>
-
-                }                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-
-            } catch (error) {                    <div>
-
-                console.error('Error loading stats:', error);                        <div class="stat-label">Created</div>
-
-            }                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botCreated">-</div>
-
-        }                    </div>
-
-                    <div>
-
-        async function loadBotChats() {                        <div class="stat-label">Bot Type</div>
-
-            try {                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botType">Private Bot</div>
-
-                // Show loading                    </div>
-
-                document.getElementById('chatsLoading').style.display = 'block';                    <div>
-
-                document.getElementById('chatsContent').classList.add('hidden');                        <div class="stat-label">Verified</div>
-
-                document.getElementById('chatsEmpty').classList.add('hidden');                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botVerified">No</div>
-
-                document.getElementById('chatsError').classList.add('hidden');                    </div>
-
-                    <div>
-
-                const response = await fetch(`/api/bots/${botId}/chats`);                        <div class="stat-label">Webhook Status</div>
-
-                const data = await response.json();                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="webhookStatus">Not Set</div>
-
-                    </div>
-
-                document.getElementById('chatsLoading').style.display = 'none';                    <div>
-
-                        <div class="stat-label">Last Update Time</div>
-
-                if (data.success && data.chats) {                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="lastUpdateTime">-</div>
-
-                    const { channels, groups, private: privateChats } = data.chats;                    </div>
-
-                    <div>
-
-                    // Update counts                        <div class="stat-label">Stats Time Range</div>
-
-                    document.getElementById('channelsCount').textContent = channels.length;                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="statsTimeRange">Recent activity only</div>
-
-                    document.getElementById('groupsCount').textContent = groups.length;                    </div>
-
-                    document.getElementById('privateCount').textContent = privateChats.length;                </div>
-
-            </div>
-
-                    if (channels.length === 0 && groups.length === 0 && privateChats.length === 0) {
-
-                        document.getElementById('chatsEmpty').classList.remove('hidden');            <!-- Channels and Groups Section -->
-
-                    } else {            <div class="updates-section" style="margin-bottom: 20px;">
-
-                        document.getElementById('chatsContent').classList.remove('hidden');                <h3>🏢 Channels & Groups</h3>
-
-                        renderChatsList('channels', channels);                <div id="chatsLoading" style="text-align: center; padding: 20px; color: #999;">
-
-                        renderChatsList('groups', groups);                    Loading chats...
-
-                        renderChatsList('private', privateChats);                </div>
-
-                    }                <div id="chatsContent" style="display: none;">
-
-                } else {                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
-
-                    document.getElementById('chatsError').classList.remove('hidden');                        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
-
-                }                            <div style="font-size: 24px; font-weight: bold; color: #667eea;" id="channelCount">0</div>
-
-            } catch (error) {                            <div style="color: #666; font-size: 14px;">Channels</div>
-
-                console.error('Error loading chats:', error);                        </div>
-
-                document.getElementById('chatsLoading').style.display = 'none';                        <div style="background: #f0fff4; padding: 15px; border-radius: 8px; border-left: 4px solid #48bb78;">
-
-                document.getElementById('chatsError').classList.remove('hidden');                            <div style="font-size: 24px; font-weight: bold; color: #48bb78;" id="groupCount">0</div>
-
-            }                            <div style="color: #666; font-size: 14px;">Groups</div>
-
-        }                        </div>
-
-                        <div style="background: #fef5e7; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12;">
-
-        function renderChatsList(type, chats) {                            <div style="font-size: 24px; font-weight: bold; color: #f39c12;" id="totalChatsCount">0</div>
-
-            const container = document.getElementById(`${type}Container`);                            <div style="color: #666; font-size: 14px;">Total Chats</div>
-
-                                    </div>
-
-            if (chats.length === 0) {                    </div>
-
-                container.innerHTML = '<p class="text-sm text-bodydark">None found</p>';                    <div id="chatsList"></div>
-
-                return;                    <div id="noChats" style="text-align: center; padding: 30px; color: #999; display: none;">
-
-            }                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
-
-                        <div>No channels or groups found in recent updates</div>
-
-            container.innerHTML = '';                        <div style="font-size: 13px; margin-top: 8px;">Add this bot to channels/groups or start monitoring to track them</div>
-
-                                </div>
-
-            chats.forEach(chat => {                </div>
-
-                const chatEl = document.createElement('div');            </div>
-
-                chatEl.className = 'flex items-center justify-between p-3 rounded border border-stroke hover:bg-gray-50';
-
-                            <!-- Recent Updates -->
-
-                chatEl.innerHTML = `            <div class="updates-section">
-
-                    <div class="flex items-center gap-3">                <h3>📱 Recent Updates</h3>
-
-                        <div class="h-10 w-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary font-semibold">                <div id="recentUpdates">
-
-                            ${chat.title ? chat.title.charAt(0).toUpperCase() : '?'}                    <div class="update-item">
-
-                        </div>                        <div class="update-icon">📊</div>
-
-                        <div>                        <div class="update-content">
-
-                            <p class="font-medium text-black">${chat.title || 'Unknown'}</p>                            <div class="update-type">No recent activity</div>
-
-                            <p class="text-xs text-bodydark">ID: ${chat.id}</p>                            <div class="update-text">Updates will appear here when users interact with your bot</div>
-
-                        </div>                            <div class="update-time">-</div>
-
-                    </div>                        </div>
-
-                    <span class="text-xs text-bodydark">${chat.memberCount ? `${chat.memberCount} members` : ''}</span>                    </div>
-
-                `;                </div>
-
-                            </div>
-
-                container.appendChild(chatEl);        </div>
-
-            });    </div>
-
+            } catch (error) {
+                showError('Failed to load bot details: ' + error.message);
+            }
         }
 
-    <script>
+        function renderBot() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
 
-        async function toggleMonitoring() {        let currentBot = null;
+            // Update bot header
+            document.getElementById('botName').textContent = currentBot.name;
+            document.getElementById('botUsername').textContent = '@' + currentBot.username;
+            document.getElementById('botId').textContent = 'ID: ' + currentBot.id;
+            document.getElementById('botToken').textContent = currentBot.token || 'No token available';
+            document.getElementById('botCreated').textContent = new Date(currentBot.addedAt).toLocaleString();
+            document.getElementById('botVerified').textContent = currentBot.isVerified ? 'Yes ✓' : 'No';
 
-            const action = isMonitoring ? 'stop' : 'start';        let tokenVisible = false;
-
-            
-
-            try {        // Get bot ID from URL
-
-                showToast(`${action === 'start' ? 'Starting' : 'Stopping'} bot...`, 'info');        const urlParams = new URLSearchParams(window.location.search);
-
-                        const botId = urlParams.get('id');
-
-                const response = await fetch(`/api/bots/${botId}/${action}`, {
-
-                    method: 'POST'        if (!botId) {
-
-                });            showError('No bot ID provided');
-
-        } else {
-
-                const data = await response.json();            loadBotDetails();
-
-        }
-
-                if (data.success) {
-
-                    isMonitoring = !isMonitoring;        function showError(message) {
-
-                                document.getElementById('loading').style.display = 'none';
-
-                    const statusBadge = document.getElementById('botStatus');            document.getElementById('error').textContent = '❌ ' + message;
-
-                    const btn = document.getElementById('toggleMonitoringBtn');            document.getElementById('error').style.display = 'block';
-
-                            }
-
-                    if (isMonitoring) {
-
-                        statusBadge.className = 'inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success';        async function loadBotDetails() {
-
-                        statusBadge.textContent = '● Active';            try {
-
-                        btn.textContent = 'Stop Monitoring';                const response = await fetch(`/api/bots/${botId}`);
-
-                    } else {                const data = await response.json();
-
-                        statusBadge.className = 'inline-flex rounded-full bg-bodydark bg-opacity-10 py-1 px-3 text-sm font-medium text-bodydark';
-
-                        statusBadge.textContent = '○ Inactive';                if (data.success && data.bot) {
-
-                        btn.textContent = 'Start Monitoring';                    currentBot = data.bot;
-
-                    }                    renderBot();
-
-                                        loadBotStats();
-
-                    showToast(`Bot ${action === 'start' ? 'started' : 'stopped'} successfully`, 'success');                    loadBotChats();
-
-                } else {                } else {
-
-                    showToast(data.error || `Failed to ${action} bot`, 'error');                    showError(data.error || 'Bot not found');
-
-                }                }
-
-            } catch (error) {            } catch (error) {
-
-                showToast('Error: ' + error.message, 'error');                showError('Failed to load bot details: ' + error.message);
-
-            }            }
-
-        }        }
-
-
-
-        function toggleToken() {        function renderBot() {
-
-            tokenVisible = !tokenVisible;            document.getElementById('loading').style.display = 'none';
-
-            const tokenEl = document.getElementById('botToken');            document.getElementById('content').style.display = 'block';
-
-            const toggleEl = document.getElementById('tokenToggle');
-
-                        // Update bot header
-
-            if (tokenVisible) {            document.getElementById('botName').textContent = currentBot.name;
-
-                tokenEl.style.display = 'block';            document.getElementById('botUsername').textContent = '@' + currentBot.username;
-
-                tokenEl.textContent = currentBot.token || 'No token available';            document.getElementById('botId').textContent = 'ID: ' + currentBot.id;
-
-                toggleEl.textContent = 'Hide';            document.getElementById('botToken').textContent = currentBot.token || 'No token available';
-
-            } else {            document.getElementById('botCreated').textContent = new Date(currentBot.addedAt).toLocaleString();
-
-                tokenEl.style.display = 'none';            document.getElementById('botVerified').textContent = currentBot.isVerified ? 'Yes ✓' : 'No';
-
-                toggleEl.textContent = 'Show';
-
-            }            // Update avatar
-
-        }            const avatarEl = document.getElementById('botAvatar');
-
+            // Update avatar
+            const avatarEl = document.getElementById('botAvatar');
             if (currentBot.photoUrl) {
+                avatarEl.style.backgroundImage = `url(${currentBot.photoUrl})`;
+                avatarEl.style.backgroundSize = 'cover';
+                avatarEl.style.backgroundPosition = 'center';
+                avatarEl.textContent = '';
+            } else {
+                avatarEl.textContent = '🤖';
+            }
 
-        // Add toast animations                avatarEl.style.backgroundImage = `url(${currentBot.photoUrl})`;
+            // Update page title
+            document.title = `${currentBot.name} - Bot Details`;
+        }
 
-        const style = document.createElement('style');                avatarEl.style.backgroundSize = 'cover';
-
-        style.textContent = `                avatarEl.style.backgroundPosition = 'center';
-
-            @keyframes slideIn {                avatarEl.textContent = '';
-
-                from { transform: translateX(400px); opacity: 0; }            } else {
-
-                to { transform: translateX(0); opacity: 1; }                avatarEl.textContent = '🤖';
-
-            }            }
-
-            @keyframes slideOut {
-
-                from { transform: translateX(0); opacity: 1; }            // Update page title
-
-                to { transform: translateX(400px); opacity: 0; }            document.title = `${currentBot.name} - Bot Details`;
-
-            }        }
-
-        `;
-
-        document.head.appendChild(style);        async function refreshStats() {
-
-    </script>            const btn = document.getElementById('refreshBtn');
-
-</body>            btn.disabled = true;
-
-</html>            btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Refreshing...';
-
+        async function refreshStats() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Refreshing...';
             
             await loadBotStats();
             
