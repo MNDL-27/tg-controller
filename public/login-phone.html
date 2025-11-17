@@ -3,512 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone Login - TG Controller</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <title>Login - TG Controller</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config (TailAdmin theme) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3C50E0',
+                        stroke: '#E2E8F0',
+                    },
+                },
+            },
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-container {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        .logo {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .phone-input {
-            font-size: 18px;
-            font-weight: 500;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        .code-input {
-            font-size: 24px;
-            font-weight: 600;
-            text-align: center;
-            letter-spacing: 8px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(42, 171, 238, 0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            margin-top: 12px;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
-        }
-
-        .status {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-
-        .status.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            display: block;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #2AABEE;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .step {
-            display: none;
-        }
-
-        .step.active {
-            display: block;
-        }
-
-        .note {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 12px;
-            margin-top: 20px;
-            text-align: left;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #856404;
-        }
-
-        .features {
-            background: #f7f9fc;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .feature-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .hint {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 8px;
-        }
-
-        .phone-display {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #2AABEE;
-            margin-bottom: 20px;
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="login-container">
-        <div class="logo">📱</div>
-        <h1>Login with Phone</h1>
-        <p class="subtitle">Real Telegram authentication</p>
+<body class="bg-gray-100">
+    
+    <div class="flex min-h-screen">
+        
+        <!-- Left Side - Login Form -->
+        <div class="flex w-full flex-col lg:w-1/2">
+            
+            <div class="flex min-h-screen items-center justify-center px-6 py-12">
+                <div class="w-full max-w-md">
+                    
+                    <!-- Logo -->
+                    <div class="mb-10 text-center">
+                        <h1 class="text-4xl font-bold text-black mb-2">
+                            🤖 TG Controller
+                        </h1>
+                        <p class="text-bodydark2">Manage all your Telegram bots from one dashboard</p>
+                    </div>
 
-        <div id="status" class="status"></div>
+                    <!-- Login Form Card -->
+                    <div class="rounded-sm border border-stroke bg-white shadow-default">
+                        <div class="border-b border-stroke py-4 px-7">
+                            <h3 class="font-medium text-black">
+                                Sign In with Telegram
+                            </h3>
+                        </div>
+                        
+                        <div class="p-7">
+                            
+                            <!-- Step 1: Phone Number -->
+                            <div id="step1">
+                                <div class="mb-4">
+                                    <label class="mb-2.5 block font-medium text-black">
+                                        Phone Number
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="tel"
+                                            id="phoneNumber"
+                                            placeholder="+1234567890"
+                                            class="w-full rounded border border-stroke bg-transparent py-3 px-5 outline-none focus:border-primary active:border-primary"
+                                        />
+                                        <span class="absolute right-4 top-4 text-bodydark2">
+                                            📱
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-bodydark2 mt-2">
+                                        Enter your phone number with country code
+                                    </p>
+                                </div>
 
-        <!-- Step 1: Phone Number -->
-        <div id="step1" class="step active">
-            <div class="features">
-                <div class="feature-item">
-                    <span>✅</span>
-                    <span>Secure Telegram authentication</span>
-                </div>
-                <div class="feature-item">
-                    <span>🔒</span>
-                    <span>SMS/Telegram code verification</span>
-                </div>
-                <div class="feature-item">
-                    <span>🚀</span>
-                    <span>Access all your bots</span>
+                                <button
+                                    onclick="sendCode()"
+                                    class="w-full cursor-pointer rounded border border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                                >
+                                    Send Code
+                                </button>
+                            </div>
+
+                            <!-- Step 2: SMS Code -->
+                            <div id="step2" class="hidden">
+                                <div class="mb-4">
+                                    <label class="mb-2.5 block font-medium text-black">
+                                        Verification Code
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="smsCode"
+                                        placeholder="Enter 5-digit code"
+                                        maxlength="5"
+                                        class="w-full rounded border border-stroke bg-transparent py-3 px-5 text-center text-2xl tracking-widest outline-none focus:border-primary"
+                                    />
+                                    <p class="text-xs text-bodydark2 mt-2">
+                                        Check your Telegram app for the code
+                                    </p>
+                                </div>
+
+                                <button
+                                    onclick="verifyCode()"
+                                    class="w-full cursor-pointer rounded border border-primary bg-primary p-3 text-white transition hover:bg-opacity-90 mb-3"
+                                >
+                                    Verify Code
+                                </button>
+
+                                <button
+                                    onclick="backToPhone()"
+                                    class="w-full cursor-pointer rounded border border-stroke p-3 text-black transition hover:bg-gray-50"
+                                >
+                                    ← Back
+                                </button>
+                            </div>
+
+                            <!-- Step 3: 2FA Password -->
+                            <div id="step3" class="hidden">
+                                <div class="mb-4">
+                                    <label class="mb-2.5 block font-medium text-black">
+                                        2FA Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        placeholder="Enter your password"
+                                        class="w-full rounded border border-stroke bg-transparent py-3 px-5 outline-none focus:border-primary"
+                                    />
+                                    <p class="text-xs text-bodydark2 mt-2">
+                                        Your account has two-factor authentication enabled
+                                    </p>
+                                </div>
+
+                                <button
+                                    onclick="verifyPassword()"
+                                    class="w-full cursor-pointer rounded border border-primary bg-primary p-3 text-white transition hover:bg-opacity-90 mb-3"
+                                >
+                                    Verify Password
+                                </button>
+
+                                <button
+                                    onclick="backToPhone()"
+                                    class="w-full cursor-pointer rounded border border-stroke p-3 text-black transition hover:bg-gray-50"
+                                >
+                                    ← Start Over
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Info Message -->
+                    <div class="mt-6 rounded-sm border border-[#3C50E0] border-opacity-20 bg-[#3C50E0] bg-opacity-5 p-4">
+                        <p class="text-sm text-[#3C50E0]">
+                            <strong>Note:</strong> This is secure authentication via Telegram API. Your credentials are never stored.
+                        </p>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="phoneNumber">Phone Number</label>
-                <input 
-                    type="tel" 
-                    id="phoneNumber" 
-                    class="phone-input"
-                    placeholder="+1234567890"
-                    autocomplete="tel"
-                >
-                <div class="hint">Enter with country code (e.g., +1, +44, +91)</div>
-            </div>
+        </div>
 
-            <button class="btn" onclick="sendCode()">
-                <span id="sendCodeText">Send Code</span>
-            </button>
-
-            <div class="note">
-                <strong>Note:</strong> You'll receive a verification code via SMS or Telegram app.
+        <!-- Right Side - Background -->
+        <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-purple-600 items-center justify-center p-12">
+            <div class="text-center text-white">
+                <div class="text-8xl mb-6">🤖</div>
+                <h2 class="text-4xl font-bold mb-4">Welcome Back!</h2>
+                <p class="text-xl opacity-90">
+                    Manage all your Telegram bots from one powerful dashboard
+                </p>
+                <div class="mt-12 grid grid-cols-3 gap-6 text-center">
+                    <div>
+                        <div class="text-3xl font-bold">15+</div>
+                        <div class="text-sm opacity-75">Bots Managed</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold">24/7</div>
+                        <div class="text-sm opacity-75">Monitoring</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold">Real-time</div>
+                        <div class="text-sm opacity-75">Statistics</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Step 2: Verification Code -->
-        <div id="step2" class="step">
-            <div class="phone-display">
-                <div style="font-size: 14px; color: #6c757d; margin-bottom: 4px;">Sending code to:</div>
-                <div id="phoneDisplay"></div>
-            </div>
-
-            <div class="form-group">
-                <label for="verificationCode">Verification Code</label>
-                <input 
-                    type="text" 
-                    id="verificationCode" 
-                    class="code-input"
-                    placeholder="12345"
-                    maxlength="5"
-                    autocomplete="one-time-code"
-                >
-                <div class="hint">Enter the 5-digit code from SMS or Telegram</div>
-            </div>
-
-            <button class="btn" onclick="verifyCode()">
-                <span id="verifyCodeText">Verify & Login</span>
-            </button>
-
-            <button class="btn btn-secondary" onclick="backToPhone()">
-                Change Number
-            </button>
-
-            <div class="note">
-                <strong>Didn't receive?</strong> Check your Telegram app messages or wait 1 minute to resend.
-            </div>
-        </div>
-
-        <!-- Step 3: Password (if 2FA enabled) -->
-        <div id="step3" class="step">
-            <div class="phone-display">
-                <div style="font-size: 14px; color: #6c757d; margin-bottom: 4px;">Two-Factor Authentication</div>
-                <div id="phoneDisplay2"></div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">2FA Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                >
-                <div class="hint">Your cloud password (2FA)</div>
-            </div>
-
-            <button class="btn" onclick="verifyPassword()">
-                <span id="verifyPasswordText">Login</span>
-            </button>
-
-            <button class="btn btn-secondary" onclick="backToPhone()">
-                Start Over
-            </button>
-        </div>
     </div>
 
     <script>
-        let currentPhone = '';
-        let phoneCodeHash = '';
+        let currentStep = 1;
+        let phoneNumber = '';
 
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = message;
-            statusEl.className = `status ${type}`;
+        function showStep(step) {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step' + step).classList.remove('hidden');
+            currentStep = step;
         }
 
-        function showStep(stepNumber) {
-            document.querySelectorAll('.step').forEach(step => {
-                step.classList.remove('active');
-            });
-            document.getElementById(`step${stepNumber}`).classList.add('active');
-        }
-
-        function setButtonLoading(buttonId, textId, loading) {
-            const button = document.querySelector(`#${textId}`).closest('button');
-            const textEl = document.getElementById(textId);
+        function showToast(message, type = 'info') {
+            const colors = {
+                success: '#10ac84',
+                error: '#ff4757',
+                info: '#3C50E0',
+                warning: '#f39c12'
+            };
             
-            if (loading) {
-                button.disabled = true;
-                textEl.innerHTML = '<span class="loading"></span>Processing...';
-            } else {
-                button.disabled = false;
-                textEl.textContent = textEl.textContent.replace('Processing...', '').trim();
-            }
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${colors[type] || colors.info};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
         async function sendCode() {
-            const phoneInput = document.getElementById('phoneNumber');
-            const phone = phoneInput.value.trim();
-
-            if (!phone) {
-                showStatus('❌ Please enter your phone number', 'error');
-                phoneInput.focus();
+            phoneNumber = document.getElementById('phoneNumber').value.trim();
+            
+            if (!phoneNumber || !phoneNumber.startsWith('+')) {
+                showToast('Please enter phone number with country code (e.g., +1234567890)', 'warning');
                 return;
             }
-
-            if (!phone.startsWith('+')) {
-                showStatus('❌ Phone number must start with + and country code', 'error');
-                phoneInput.focus();
-                return;
-            }
-
-            currentPhone = phone;
-            setButtonLoading('sendBtn', 'sendCodeText', true);
-            showStatus('📱 Sending verification code...', 'info');
 
             try {
+                showToast('Sending code...', 'info');
                 const response = await fetch('/auth/phone/send-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone })
+                    body: JSON.stringify({ phone: phoneNumber })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    phoneCodeHash = data.phoneCodeHash;
-                    document.getElementById('phoneDisplay').textContent = currentPhone;
-                    document.getElementById('phoneDisplay2').textContent = currentPhone;
-                    showStatus('✅ Code sent! Check your SMS or Telegram', 'success');
+                    showToast('Code sent! Check your Telegram app', 'success');
                     showStep(2);
-                    document.getElementById('verificationCode').focus();
+                    document.getElementById('smsCode').focus();
                 } else {
-                    showStatus('❌ ' + (data.error || 'Failed to send code'), 'error');
+                    showToast(data.error || 'Failed to send code', 'error');
                 }
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            } finally {
-                setButtonLoading('sendBtn', 'sendCodeText', false);
+                showToast('Error: ' + error.message, 'error');
             }
         }
 
         async function verifyCode() {
-            const code = document.getElementById('verificationCode').value.trim();
-
-            if (!code) {
-                showStatus('❌ Please enter the verification code', 'error');
+            const code = document.getElementById('smsCode').value.trim();
+            
+            if (!code || code.length !== 5) {
+                showToast('Please enter the 5-digit code', 'warning');
                 return;
             }
 
-            setButtonLoading('verifyBtn', 'verifyCodeText', true);
-            showStatus('🔐 Verifying code...', 'info');
-
             try {
+                showToast('Verifying...', 'info');
                 const response = await fetch('/auth/phone/verify-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phone: currentPhone,
-                        code: code,
-                        phoneCodeHash: phoneCodeHash
-                    })
+                    body: JSON.stringify({ phone: phoneNumber, code: code })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    if (data.requiresPassword) {
-                        showStatus('🔒 2FA enabled - Enter your password', 'info');
-                        showStep(3);
-                        document.getElementById('password').focus();
-                    } else {
-                        showStatus('✅ Login successful! Redirecting...', 'success');
-                        setTimeout(() => {
-                            window.location.href = '/bots';
-                        }, 1500);
-                    }
+                    showToast('Login successful!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/bots.html';
+                    }, 1000);
+                } else if (data.needPassword) {
+                    showToast('2FA required', 'info');
+                    showStep(3);
+                    document.getElementById('password').focus();
                 } else {
-                    showStatus('❌ ' + (data.error || 'Invalid code'), 'error');
+                    showToast(data.error || 'Invalid code', 'error');
                 }
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            } finally {
-                setButtonLoading('verifyBtn', 'verifyCodeText', false);
+                showToast('Error: ' + error.message, 'error');
             }
         }
 
         async function verifyPassword() {
             const password = document.getElementById('password').value;
-
+            
             if (!password) {
-                showStatus('❌ Please enter your 2FA password', 'error');
+                showToast('Please enter your 2FA password', 'warning');
                 return;
             }
 
-            setButtonLoading('verifyPwdBtn', 'verifyPasswordText', true);
-            showStatus('🔐 Verifying password...', 'info');
-
             try {
+                showToast('Verifying password...', 'info');
                 const response = await fetch('/auth/phone/verify-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phone: currentPhone,
-                        password: password
-                    })
+                    body: JSON.stringify({ phone: phoneNumber, password: password })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    showStatus('✅ Login successful! Redirecting...', 'success');
+                    showToast('Login successful!', 'success');
                     setTimeout(() => {
-                        window.location.href = '/bots';
-                    }, 1500);
+                        window.location.href = '/bots.html';
+                    }, 1000);
                 } else {
-                    showStatus('❌ ' + (data.error || 'Invalid password'), 'error');
+                    showToast(data.error || 'Invalid password', 'error');
                 }
             } catch (error) {
-                showStatus('❌ Error: ' + error.message, 'error');
-            } finally {
-                setButtonLoading('verifyPwdBtn', 'verifyPasswordText', false);
+                showToast('Error: ' + error.message, 'error');
             }
         }
 
         function backToPhone() {
             showStep(1);
-            document.getElementById('phoneNumber').value = currentPhone;
-            document.getElementById('verificationCode').value = '';
+            document.getElementById('smsCode').value = '';
             document.getElementById('password').value = '';
-            showStatus('', '');
         }
 
-        // Auto-submit code when 5 digits entered
-        document.getElementById('verificationCode')?.addEventListener('input', (e) => {
-            if (e.target.value.length === 5) {
-                setTimeout(() => verifyCode(), 500);
-            }
-        });
+        // Auto-focus on load
+        window.onload = () => {
+            document.getElementById('phoneNumber').focus();
+        };
 
-        // Format phone number
-        document.getElementById('phoneNumber')?.addEventListener('input', (e) => {
-            let value = e.target.value;
-            if (value && !value.startsWith('+')) {
-                e.target.value = '+' + value;
+        // Add toast animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
             }
-        });
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

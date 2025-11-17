@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bots - TG Controller</title>
+    
+    <!-- Tailwind CSS CDN (TailAdmin uses this) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config (matching TailAdmin theme) -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3C50E0',
+                        stroke: '#E2E8F0',
+                        graydark: '#333A48',
+                        'gray-2': '#F7F9FC',
+                        'gray-3': '#FAFAFA',
+                        bodydark: '#AEB7C0',
+                        bodydark1: '#DEE4EE',
+                        bodydark2: '#8A99AF',
+                        meta: {
+                            1: '#DC3545',
+                            2: '#EFF2F7',
+                            3: '#10B981',
+                            4: '#313D4A',
+                            5: '#259AE6',
+                            6: '#FFBA00',
+                            7: '#FF6766',
+                            8: '#F0950C',
+                            9: '#E5E7EB',
+                            10: '#0FADCF',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-2 font-sans">
+    
+    <!-- Page Wrapper -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Content Area -->
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            
+            <!-- Header -->
+            <header class="sticky top-0 z-999 flex w-full bg-white shadow-md">
+                <div class="flex flex-grow items-center justify-between py-4 px-4 shadow-2 md:px-6 2xl:px-11">
+                    <div class="flex items-center gap-2 sm:gap-4">
+                        <h1 class="text-2xl font-bold text-black">
+                            🤖 TG Controller
+                        </h1>
+                    </div>
+
+                    <div class="flex items-center gap-3 2xsm:gap-7">
+                        <!-- User Area -->
+                        <div class="flex items-center gap-4">
+                            <span class="hidden text-right lg:block">
+                                <span class="block text-sm font-medium text-black" id="userName">Loading...</span>
+                                <span class="block text-xs text-bodydark2" id="userPhone"></span>
+                            </span>
+                            
+                            <span class="h-12 w-12 rounded-full overflow-hidden">
+                                <img id="userAvatar" src="" alt="User" class="h-full w-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                <div id="userAvatarFallback" class="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-xl font-bold" style="display: none;">
+                                    ?
+                                </div>
+                            </span>
+
+                            <button onclick="logout()" class="inline-flex items-center justify-center rounded-md bg-meta-1 py-2 px-4 text-center font-medium text-white hover:bg-opacity-90">
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main>
+                <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                    
+                    <!-- Page Title -->
+                    <div class="mb-6">
+                        <h2 class="text-title-md2 font-semibold text-black">
+                            My Bots
+                        </h2>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mb-6 flex flex-wrap gap-3">
+                        <button onclick="fetchBotsFromBotFather()" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary py-3 px-6 text-center font-medium text-white hover:bg-opacity-90 transition">
+                            <span>🔄</span>
+                            Fetch Bots from BotFather
+                        </button>
+                        
+                        <button onclick="showCreateBotModal()" class="inline-flex items-center justify-center gap-2 rounded-md bg-meta-3 py-3 px-6 text-center font-medium text-white hover:bg-opacity-90 transition">
+                            <span>➕</span>
+                            Create New Bot
+                        </button>
+                    </div>
+
+                    <!-- Bots Grid -->
+                    <div id="botsGrid" class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:grid-cols-4">
+                        <!-- Loading skeleton -->
+                        <div class="rounded-sm border border-stroke bg-white p-6 shadow-default animate-pulse">
+                            <div class="h-16 w-16 rounded-lg bg-gray-300 mb-4"></div>
+                            <div class="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-300 rounded w-1/2"></div>
+                        </div>
+                        <div class="rounded-sm border border-stroke bg-white p-6 shadow-default animate-pulse">
+                            <div class="h-16 w-16 rounded-lg bg-gray-300 mb-4"></div>
+                            <div class="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-300 rounded w-1/2"></div>
+                        </div>
+                        <div class="rounded-sm border border-stroke bg-white p-6 shadow-default animate-pulse">
+                            <div class="h-16 w-16 rounded-lg bg-gray-300 mb-4"></div>
+                            <div class="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                            <div class="h-3 bg-gray-300 rounded w-1/2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden rounded-sm border border-stroke bg-white p-10 shadow-default text-center">
+                        <div class="text-6xl mb-4">📭</div>
+                        <h3 class="text-xl font-semibold text-black mb-2">No Bots Found</h3>
+                        <p class="text-bodydark2 mb-6">Click "Fetch Bots" to load your bots from BotFather</p>
+                    </div>
+
+                </div>
+            </main>
+
+        </div>
+    </div>
+
+    <!-- Create Bot Modal -->
+    <div id="createBotModal" class="hidden fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-40">
+        <div class="fade-in rounded-sm border border-stroke bg-white shadow-default max-w-md w-full mx-4">
+            <div class="border-b border-stroke py-4 px-7">
+                <h3 class="font-medium text-black">Create New Bot</h3>
+            </div>
+            <div class="p-7">
+                <div class="mb-4">
+                    <label class="mb-2.5 block font-medium text-black">Bot Name</label>
+                    <input type="text" id="newBotName" placeholder="MyAwesomeBot" class="w-full rounded border border-stroke bg-transparent py-3 px-5 outline-none focus:border-primary">
+                </div>
+                <div class="mb-4">
+                    <label class="mb-2.5 block font-medium text-black">Bot Username</label>
+                    <input type="text" id="newBotUsername" placeholder="myawesomebot" class="w-full rounded border border-stroke bg-transparent py-3 px-5 outline-none focus:border-primary">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button onclick="hideCreateBotModal()" class="inline-flex items-center justify-center rounded-md border border-stroke py-2 px-6 text-center font-medium hover:shadow-1">
+                        Cancel
+                    </button>
+                    <button onclick="createBot()" class="inline-flex items-center justify-center rounded-md bg-primary py-2 px-6 text-center font-medium text-white hover:bg-opacity-90">
+                        Create
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script>
+        let userBots = [];
+
+        async function loadUserData() {
+            try {
+                const data = await cachedFetch('/api/user');
+                
+                if (data.loggedIn) {
+                    document.getElementById('userName').textContent = data.user.first_name + (data.user.last_name ? ' ' + data.user.last_name : '');
+                    document.getElementById('userPhone').textContent = data.user.username ? '@' + data.user.username : '';
+                    
+                    if (data.user.photo_url) {
+                        document.getElementById('userAvatar').src = data.user.photo_url;
+                    } else {
+                        document.getElementById('userAvatarFallback').textContent = data.user.first_name.charAt(0).toUpperCase();
+                        document.getElementById('userAvatarFallback').style.display = 'flex';
+                    }
+                    
+                    loadBots();
+                } else {
+                    window.location.href = '/login-phone.html';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                window.location.href = '/login-phone.html';
+            }
+        }
+
+        async function loadBots() {
+            try {
+                const data = await cachedFetch('/api/bots', {}, false); // Don't cache bot list
+                
+                if (data.success && data.bots) {
+                    userBots = data.bots;
+                    renderBots();
+                }
+            } catch (error) {
+                console.error('Error loading bots:', error);
+                showToast('Failed to load bots', 'error');
+            }
+        }
+
+        function renderBots() {
+            const grid = document.getElementById('botsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (userBots.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            
+            grid.innerHTML = userBots.map(bot => `
+                <a href="/bot-details.html?id=${bot.id}" class="fade-in block rounded-sm border border-stroke bg-white p-6 shadow-default hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        ${bot.photo_url ? 
+                            `<img src="${bot.photo_url}" alt="${bot.name}" class="h-16 w-16 rounded-lg object-cover">` :
+                            `<div class="h-16 w-16 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                                ${bot.name.charAt(0).toUpperCase()}
+                            </div>`
+                        }
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-black">${bot.name}</h3>
+                            <p class="text-sm text-primary">@${bot.username}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-bodydark2">ID: ${bot.id}</span>
+                        ${bot.token ? 
+                            '<span class="inline-flex rounded-full bg-meta-3 bg-opacity-10 py-1 px-3 text-xs font-medium text-meta-3">Active</span>' :
+                            '<span class="inline-flex rounded-full bg-meta-7 bg-opacity-10 py-1 px-3 text-xs font-medium text-meta-7">No Token</span>'
+                        }
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        async function fetchBotsFromBotFather() {
+            try {
+                showToast('Fetching bots from BotFather...', 'info');
+                const response = await fetch('/api/bots/fetch');
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(`Found ${data.bots.length} bots!`, 'success');
+                    await loadBots();
+                } else {
+                    showToast(data.error || 'Failed to fetch bots', 'error');
+                }
+            } catch (error) {
+                showToast('Error fetching bots', 'error');
+            }
+        }
+
+        function showCreateBotModal() {
+            document.getElementById('createBotModal').classList.remove('hidden');
+        }
+
+        function hideCreateBotModal() {
+            document.getElementById('createBotModal').classList.add('hidden');
+            document.getElementById('newBotName').value = '';
+            document.getElementById('newBotUsername').value = '';
+        }
+
+        async function createBot() {
+            const name = document.getElementById('newBotName').value.trim();
+            const username = document.getElementById('newBotUsername').value.trim();
+            
+            if (!name || !username) {
+                showToast('Please fill in all fields', 'warning');
+                return;
+            }
+            
+            try {
+                showToast('Creating bot...', 'info');
+                const response = await fetch('/api/bots/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Bot created successfully!', 'success');
+                    hideCreateBotModal();
+                    await loadBots();
+                } else {
+                    showToast(data.error || 'Failed to create bot', 'error');
+                }
+            } catch (error) {
+                showToast('Error creating bot', 'error');
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/auth/logout', { method: 'POST' });
+                window.location.href = '/login-phone.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // Initialize
+        loadUserData();
+    </script>
+</body>
+</html>

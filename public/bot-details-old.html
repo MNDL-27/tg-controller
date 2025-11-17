@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Details - TG Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+
+        .bot-header-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .bot-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            flex-shrink: 0;
+        }
+
+        .bot-info-main {
+            flex: 1;
+        }
+
+        .bot-info-main h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .bot-username {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .bot-id {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .bot-token-section {
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .token-hidden {
+            filter: blur(4px);
+            user-select: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-success {
+            background: #10ac84;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, #10ac84 0%, #06d6a0 100%);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, #f79e1b 0%, #f59e0b 100%);
+        }
+
+        .stat-icon.red {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-description {
+            color: #666;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .chart-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .updates-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .updates-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .update-item {
+            padding: 15px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            gap: 15px;
+        }
+
+        .update-item:last-child {
+            border-bottom: none;
+        }
+
+        .update-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #f7f9fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .update-content {
+            flex: 1;
+        }
+
+        .update-type {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .update-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .update-time {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #ff4757;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .refresh-btn {
+            background: #2AABEE;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .refresh-btn:hover:not(:disabled) {
+            background: #1a9bd7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(42, 171, 238, 0.3);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/bots.html" class="back-btn">← Back to Bots</a>
+            <div style="display: flex; gap: 10px;">
+                <button class="refresh-btn" id="monitorBtn" onclick="toggleMonitoring()" style="background: #10ac84;">
+                    📡 Start Monitoring
+                </button>
+                <button class="refresh-btn" id="refreshBtn" onclick="refreshStats()">🔄 Refresh Stats</button>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Loading bot details...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="content" style="display: none;">
+            <!-- Bot Header -->
+            <div class="bot-header-section">
+                <div class="bot-avatar" id="botAvatar">🤖</div>
+                <div class="bot-info-main">
+                    <h1 id="botName">Bot Name</h1>
+                    <div class="bot-username" id="botUsername">@username</div>
+                    <div class="bot-id" id="botId">ID: 123456789</div>
+                    <span class="status-badge status-active" id="botStatus">● Active</span>
+                    <div class="bot-token-section" id="tokenSection">
+                        <span class="token-hidden" id="botToken">token_here</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="toggleToken()">👁️ Show Token</button>
+                        <button class="btn btn-success" onclick="copyToken()">📋 Copy Token</button>
+                        <button class="btn btn-primary" onclick="openBotLink()">🔗 Open in Telegram</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">👥</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="statUsers">0</div>
+                    <div class="stat-description" id="statUsersDesc">From recent updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">💬</div>
+                    <div class="stat-label">Messages Received</div>
+                    <div class="stat-value" id="statMessages">0</div>
+                    <div class="stat-description" id="statMessagesDesc">From recent updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">📤</div>
+                    <div class="stat-label">Messages Sent</div>
+                    <div class="stat-value" id="statSentMessages">~0</div>
+                    <div class="stat-description" id="statSentDesc">Estimated replies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">🔥</div>
+                    <div class="stat-label">Commands Used</div>
+                    <div class="stat-value" id="statCommands">0</div>
+                    <div class="stat-description" id="statCommandsDesc">From recent updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">📢</div>
+                    <div class="stat-label">Channel Posts</div>
+                    <div class="stat-value" id="statChannelPosts">0</div>
+                    <div class="stat-description" id="statChannelDesc">Tracked posts to channels</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">📁</div>
+                    <div class="stat-label">Files Sent</div>
+                    <div class="stat-value" id="statFilesSent">0</div>
+                    <div class="stat-description" id="statFilesDesc">Tracked file uploads</div>
+                </div>
+            </div>
+
+            <!-- Bot Info Section -->
+            <div class="chart-section">
+                <h3>📊 Bot Information</h3>
+                <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #0c5460; border: 1px solid #bee5eb;">
+                    💡 <strong>Auto-Monitoring Available!</strong><br>
+                    • Click "<strong>📡 Start Monitoring</strong>" above to automatically track all bot activity<br>
+                    • Monitors channel posts, messages, and file uploads in real-time<br>
+                    • No bot code modification needed - works with any bot (including TelDrive)<br>
+                    • Once monitoring starts, statistics will be accurate and real-time<br>
+                    • Monitoring runs in the background and continues until stopped
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <div class="stat-label">Created</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botCreated">-</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Bot Type</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botType">Private Bot</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Verified</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="botVerified">No</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Webhook Status</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="webhookStatus">Not Set</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Last Update Time</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="lastUpdateTime">-</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Stats Time Range</div>
+                        <div style="font-size: 16px; color: #333; margin-top: 5px;" id="statsTimeRange">Recent activity only</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channels and Groups Section -->
+            <div class="updates-section" style="margin-bottom: 20px;">
+                <h3>🏢 Channels & Groups</h3>
+                <div id="chatsLoading" style="text-align: center; padding: 20px; color: #999;">
+                    Loading chats...
+                </div>
+                <div id="chatsContent" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                            <div style="font-size: 24px; font-weight: bold; color: #667eea;" id="channelCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Channels</div>
+                        </div>
+                        <div style="background: #f0fff4; padding: 15px; border-radius: 8px; border-left: 4px solid #48bb78;">
+                            <div style="font-size: 24px; font-weight: bold; color: #48bb78;" id="groupCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Groups</div>
+                        </div>
+                        <div style="background: #fef5e7; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12;">
+                            <div style="font-size: 24px; font-weight: bold; color: #f39c12;" id="totalChatsCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Total Chats</div>
+                        </div>
+                    </div>
+                    <div id="chatsList"></div>
+                    <div id="noChats" style="text-align: center; padding: 30px; color: #999; display: none;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                        <div>No channels or groups found in recent updates</div>
+                        <div style="font-size: 13px; margin-top: 8px;">Add this bot to channels/groups or start monitoring to track them</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Updates -->
+            <div class="updates-section">
+                <h3>📱 Recent Updates</h3>
+                <div id="recentUpdates">
+                    <div class="update-item">
+                        <div class="update-icon">📊</div>
+                        <div class="update-content">
+                            <div class="update-type">No recent activity</div>
+                            <div class="update-text">Updates will appear here when users interact with your bot</div>
+                            <div class="update-time">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentBot = null;
+        let tokenVisible = false;
+
+        // Get bot ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const botId = urlParams.get('id');
+
+        if (!botId) {
+            showError('No bot ID provided');
+        } else {
+            loadBotDetails();
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = '❌ ' + message;
+            document.getElementById('error').style.display = 'block';
+        }
+
+        async function loadBotDetails() {
+            try {
+                const response = await fetch(`/api/bots/${botId}`);
+                const data = await response.json();
+
+                if (data.success && data.bot) {
+                    currentBot = data.bot;
+                    renderBot();
+                    loadBotStats();
+                    loadBotChats();
+                } else {
+                    showError(data.error || 'Bot not found');
+                }
+            } catch (error) {
+                showError('Failed to load bot details: ' + error.message);
+            }
+        }
+
+        function renderBot() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+
+            // Update bot header
+            document.getElementById('botName').textContent = currentBot.name;
+            document.getElementById('botUsername').textContent = '@' + currentBot.username;
+            document.getElementById('botId').textContent = 'ID: ' + currentBot.id;
+            document.getElementById('botToken').textContent = currentBot.token || 'No token available';
+            document.getElementById('botCreated').textContent = new Date(currentBot.addedAt).toLocaleString();
+            document.getElementById('botVerified').textContent = currentBot.isVerified ? 'Yes ✓' : 'No';
+
+            // Update avatar
+            const avatarEl = document.getElementById('botAvatar');
+            if (currentBot.photoUrl) {
+                avatarEl.style.backgroundImage = `url(${currentBot.photoUrl})`;
+                avatarEl.style.backgroundSize = 'cover';
+                avatarEl.style.backgroundPosition = 'center';
+                avatarEl.textContent = '';
+            } else {
+                avatarEl.textContent = '🤖';
+            }
+
+            // Update page title
+            document.title = `${currentBot.name} - Bot Details`;
+        }
+
+        async function refreshStats() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Refreshing...';
+            
+            await loadBotStats();
+            
+            // Show success feedback
+            btn.innerHTML = '✅ Updated!';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Refresh Stats';
+            }, 1500);
+        }
+
+        async function loadBotStats() {
+            if (!currentBot || !currentBot.token) {
+                document.getElementById('statUsers').textContent = 'N/A';
+                document.getElementById('statMessages').textContent = 'N/A';
+                document.getElementById('statSentMessages').textContent = 'N/A';
+                document.getElementById('statCommands').textContent = 'N/A';
+                document.getElementById('botStatus').textContent = '⚠ No Token';
+                document.getElementById('botStatus').className = 'status-badge status-inactive';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bots/${botId}/stats`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.stats;
+                    
+                    // Update stats
+                    document.getElementById('statUsers').textContent = stats.totalUsers || 0;
+                    document.getElementById('statMessages').textContent = stats.totalMessages || 0;
+                    document.getElementById('statSentMessages').textContent = stats.usingEstimatedData ? '~' + (stats.sentMessages || 0) : (stats.sentMessages || 0);
+                    document.getElementById('statCommands').textContent = stats.commandsUsed || 0;
+                    document.getElementById('statChannelPosts').textContent = stats.channelPosts || 0;
+                    document.getElementById('statFilesSent').textContent = stats.filesSent || 0;
+                    
+                    // Update descriptions based on data source
+                    if (stats.usingEstimatedData) {
+                        document.getElementById('statUsersDesc').textContent = 'From recent updates (last 100)';
+                        document.getElementById('statMessagesDesc').textContent = 'From recent updates (last 100)';
+                        document.getElementById('statSentDesc').textContent = 'Estimated replies (excludes channels)';
+                        document.getElementById('statCommandsDesc').textContent = 'From recent updates (last 100)';
+                        document.getElementById('statChannelDesc').textContent = 'Not tracked (integrate bot code)';
+                        document.getElementById('statFilesDesc').textContent = 'Not tracked (integrate bot code)';
+                    } else {
+                        document.getElementById('statUsersDesc').textContent = 'Real-time tracked data';
+                        document.getElementById('statMessagesDesc').textContent = 'Real-time tracked data';
+                        document.getElementById('statSentDesc').textContent = 'Real-time tracked data';
+                        document.getElementById('statCommandsDesc').textContent = 'Real-time tracked data';
+                        document.getElementById('statChannelDesc').textContent = 'Real-time tracked data';
+                        document.getElementById('statFilesDesc').textContent = 'Real-time tracked data';
+                    }
+                    
+                    // Update status
+                    if (stats.isActive) {
+                        document.getElementById('botStatus').textContent = '● Active';
+                        document.getElementById('botStatus').className = 'status-badge status-active';
+                    } else {
+                        document.getElementById('botStatus').textContent = '○ Inactive';
+                        document.getElementById('botStatus').className = 'status-badge status-inactive';
+                    }
+
+                    // Update webhook status
+                    document.getElementById('webhookStatus').textContent = stats.webhookUrl || 'Not Set';
+
+                    // Update time information
+                    if (stats.newestUpdateTime) {
+                        document.getElementById('lastUpdateTime').textContent = formatTime(stats.newestUpdateTime);
+                    }
+
+                    if (stats.oldestUpdateTime && stats.newestUpdateTime) {
+                        const timeRange = formatTimeRange(stats.oldestUpdateTime, stats.newestUpdateTime);
+                        document.getElementById('statsTimeRange').textContent = timeRange + ' (' + (stats.updateCount || 'tracked') + ' updates)';
+                    } else {
+                        document.getElementById('statsTimeRange').textContent = 'No recent activity';
+                    }
+
+                    // Update recent updates
+                    if (stats.recentUpdates && stats.recentUpdates.length > 0) {
+                        renderRecentUpdates(stats.recentUpdates);
+                    }
+                } else {
+                    console.error('Failed to load stats:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function renderRecentUpdates(updates) {
+            const container = document.getElementById('recentUpdates');
+            container.innerHTML = updates.map(update => `
+                <div class="update-item">
+                    <div class="update-icon">${getUpdateIcon(update.type)}</div>
+                    <div class="update-content">
+                        <div class="update-type">${update.type}</div>
+                        <div class="update-text">${update.text}</div>
+                        <div class="update-time">${formatTime(update.timestamp)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getUpdateIcon(type) {
+            const icons = {
+                'message': '💬',
+                'command': '⚡',
+                'user': '👤',
+                'error': '❌',
+                'webhook': '🔗'
+            };
+            return icons[type] || '📊';
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + ' minutes ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        function formatTimeRange(oldest, newest) {
+            const oldDate = new Date(oldest);
+            const newDate = new Date(newest);
+            const now = new Date();
+            
+            const diffDays = Math.floor((now - oldDate) / 86400000);
+            
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Last 24 hours';
+            } else if (diffDays < 7) {
+                return 'Last ' + diffDays + ' days';
+            } else if (diffDays < 30) {
+                return 'Last ' + Math.floor(diffDays / 7) + ' weeks';
+            } else {
+                return oldDate.toLocaleDateString() + ' - ' + newDate.toLocaleDateString();
+            }
+        }
+
+        function toggleToken() {
+            const tokenEl = document.getElementById('botToken');
+            const btn = event.target;
+            
+            if (tokenVisible) {
+                tokenEl.classList.add('token-hidden');
+                btn.textContent = '👁️ Show Token';
+                tokenVisible = false;
+            } else {
+                tokenEl.classList.remove('token-hidden');
+                btn.textContent = '🙈 Hide Token';
+                tokenVisible = true;
+            }
+        }
+
+        async function copyToken() {
+            if (currentBot && currentBot.token) {
+                try {
+                    await navigator.clipboard.writeText(currentBot.token);
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                } catch (error) {
+                    alert('Failed to copy token');
+                }
+            }
+        }
+
+        function openBotLink() {
+            if (currentBot) {
+                window.open(`https://t.me/${currentBot.username}`, '_blank');
+            }
+        }
+
+        let monitoringActive = false;
+
+        async function toggleMonitoring() {
+            const btn = document.getElementById('monitorBtn');
+            btn.disabled = true;
+
+            try {
+                const action = monitoringActive ? 'stop' : 'start';
+                const response = await fetch(`/api/bots/${botId}/monitor/${action}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    monitoringActive = !monitoringActive;
+                    updateMonitorButton();
+                    
+                    const message = monitoringActive ? 
+                        '✅ Monitoring started! Bot activity will be tracked automatically.' : 
+                        '🛑 Monitoring stopped.';
+                    alert(message);
+                } else {
+                    alert('❌ ' + (data.error || 'Failed to toggle monitoring'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function updateMonitorButton() {
+            const btn = document.getElementById('monitorBtn');
+            if (monitoringActive) {
+                btn.innerHTML = '🛑 Stop Monitoring';
+                btn.style.background = '#ff4757';
+            } else {
+                btn.innerHTML = '📡 Start Monitoring';
+                btn.style.background = '#10ac84';
+            }
+        }
+
+        async function checkMonitorStatus() {
+            try {
+                const response = await fetch('/api/monitor/status');
+                const data = await response.json();
+                
+                if (data.success && data.monitors) {
+                    const monitor = data.monitors.find(m => m.botId === botId);
+                    monitoringActive = monitor && monitor.isRunning;
+                    updateMonitorButton();
+                }
+            } catch (error) {
+                console.error('Failed to check monitor status:', error);
+            }
+        }
+
+        // Check monitoring status on load
+        if (botId) {
+            checkMonitorStatus();
+        }
+
+        async function loadBotChats() {
+            try {
+                const response = await fetch(`/api/bots/${botId}/chats`);
+                const data = await response.json();
+
+                document.getElementById('chatsLoading').style.display = 'none';
+                document.getElementById('chatsContent').style.display = 'block';
+
+                if (data.success && data.chats) {
+                    const chats = data.chats;
+                    
+                    // Update counters
+                    document.getElementById('channelCount').textContent = chats.channelCount;
+                    document.getElementById('groupCount').textContent = chats.groupCount;
+                    document.getElementById('totalChatsCount').textContent = chats.total;
+
+                    // Render chats list
+                    if (chats.total === 0) {
+                        document.getElementById('noChats').style.display = 'block';
+                        document.getElementById('chatsList').style.display = 'none';
+                    } else {
+                        document.getElementById('noChats').style.display = 'none';
+                        document.getElementById('chatsList').style.display = 'block';
+                        renderChatsList(chats);
+                    }
+                } else {
+                    console.error('Failed to load chats:', data.error);
+                    document.getElementById('chatsContent').innerHTML = 
+                        '<div style="text-align: center; padding: 20px; color: #999;">Failed to load chats</div>';
+                }
+            } catch (error) {
+                console.error('Load chats error:', error);
+                document.getElementById('chatsLoading').style.display = 'none';
+                document.getElementById('chatsContent').innerHTML = 
+                    '<div style="text-align: center; padding: 20px; color: #999;">Error loading chats</div>';
+                document.getElementById('chatsContent').style.display = 'block';
+            }
+        }
+
+        function renderChatsList(chats) {
+            const chatsList = document.getElementById('chatsList');
+            let html = '';
+
+            // Render channels
+            if (chats.channels.length > 0) {
+                html += '<div style="margin-bottom: 20px;"><h4 style="color: #667eea; margin-bottom: 10px; font-size: 16px;">📢 Channels</h4>';
+                chats.channels.forEach(chat => {
+                    html += renderChatItem(chat, '📢', '#667eea');
+                });
+                html += '</div>';
+            }
+
+            // Render groups
+            if (chats.groups.length > 0) {
+                html += '<div style="margin-bottom: 20px;"><h4 style="color: #48bb78; margin-bottom: 10px; font-size: 16px;">👥 Groups</h4>';
+                chats.groups.forEach(chat => {
+                    html += renderChatItem(chat, '👥', '#48bb78');
+                });
+                html += '</div>';
+            }
+
+            // Render private chats (if any)
+            if (chats.private.length > 0) {
+                html += '<div style="margin-bottom: 20px;"><h4 style="color: #f39c12; margin-bottom: 10px; font-size: 16px;">💬 Private Chats</h4>';
+                chats.private.forEach(chat => {
+                    html += renderChatItem(chat, '💬', '#f39c12');
+                });
+                html += '</div>';
+            }
+
+            chatsList.innerHTML = html;
+        }
+
+        function renderChatItem(chat, icon, color) {
+            const chatLink = chat.username ? `https://t.me/${chat.username}` : '#';
+            const hasLink = chat.username ? true : false;
+            
+            return `
+                <div class="update-item" style="align-items: center;">
+                    <div class="update-icon" style="background: ${color}15; color: ${color}; font-size: 24px;">
+                        ${icon}
+                    </div>
+                    <div class="update-content" style="flex: 1;">
+                        <div class="update-type">${chat.title}</div>
+                        <div class="update-text" style="display: flex; gap: 10px; align-items: center;">
+                            ${chat.username ? `<span style="color: ${color};">@${chat.username}</span>` : '<span style="color: #999;">Private chat</span>'}
+                            <span style="color: #ccc;">•</span>
+                            <span style="color: #999; font-size: 12px;">ID: ${chat.id}</span>
+                        </div>
+                    </div>
+                    ${hasLink ? `
+                        <a href="${chatLink}" target="_blank" style="padding: 8px 16px; background: ${color}; color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600;">
+                            Open
+                        </a>
+                    ` : ''}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
