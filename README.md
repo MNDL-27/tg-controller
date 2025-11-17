@@ -1,294 +1,556 @@
-# TG Controller - Telegram Login for Websites# TG Controller - Telegram User Authentication
+# 🤖 TG Controller - Telegram Bot Management Dashboard# 🤖 TG Controller - Telegram Bot Management Dashboard
 
 
 
-Simple, secure user authentication for websites using Telegram's Login Widget.A complete authentication solution that allows users to login securely using their Telegram account. Works both as a standalone website and as a Telegram Web App.
+Manage all your Telegram bots from one beautiful web interface. Monitor activity, track statistics, view channels & groups, and more!Manage all your Telegram bots from one beautiful web interface. Monitor activity, track statistics, view channels & groups, and more!
 
 
 
-## 🎯 What This Does## ✨ Features
+## ✨ Features## ✨ Features
 
 
 
-Add **"Login with Telegram"** to your website. Users can login without passwords using their Telegram account!- 🔐 Secure user authentication via Telegram
+- 🔐 **Phone Number Authentication** - Login securely using your Telegram account- 🔐 **Phone Number Authentication** - Login securely using your Telegram account
 
-- 👤 User profile display and session management
+- 🤖 **Multi-Bot Management** - View and manage all your bots from BotFather- 🤖 **Multi-Bot Management** - View and manage all your bots from BotFather
 
-## ✨ Features- 📊 User dashboard after login
+- 📊 **Real-time Statistics** - Track messages, users, commands, channel posts, and files- 📊 **Real-time Statistics** - Track messages, users, commands, channel posts, and files
 
-- 🎨 Beautiful, responsive UI
+- 🏢 **Channels & Groups** - See all channels and groups your bots are in- 🏢 **Channels & Groups** - See all channels and groups your bots are in
 
-- 🔐 **Password-free authentication** - Users login with Telegram- 🔒 HMAC-based signature verification
+- 📡 **Automatic Monitoring** - Track bot activity without code changes- 📡 **Automatic Monitoring** - Track bot activity without code changes
 
-- 🌐 **Works everywhere** - Any browser, desktop or mobile- 💾 Session persistence (7 days)
+- 🖼️ **Profile Photos** - Display bot and user avatars- �️ **Profile Photos** - Display bot and user avatars
 
-- 📊 **User dashboard** - Shows profile and session info- 🌐 Works on any website (not just inside Telegram)
+- 🔄 **Auto-fetch Tokens** - Import bot tokens directly from BotFather- 🔄 **Auto-fetch Tokens** - Import bot tokens directly from BotFather
 
-- 🔒 **Secure** - HMAC signature verification
+- ➕ **Create New Bots** - Create bots via BotFather from the web interface- ➕ **Create New Bots** - Create bots via BotFather from the web interface
 
-- 💾 **Sessions** - Users stay logged in for 7 days## 🚀 Two Integration Options
+- 💾 **Persistent Sessions** - Stay logged in for 7 days- � **Persistent Sessions** - Stay logged in for 7 days
 
-- 🎨 **Beautiful UI** - Modern, responsive design
+- 🎨 **Beautiful UI** - Modern, responsive design- 🎨 **Beautiful UI** - Modern, responsive design
 
-### Option 1: Regular Website Login ⭐ **Recommended for Most Sites**
 
-## 🚀 Quick Start
 
-Users can visit your website directly and login with Telegram.
+## 🚀 Quick Start### Option 1: Regular Website Login ⭐ **Recommended for Most Sites**
 
-### 1. Install Dependencies
 
-```bash**Perfect for:**
 
-npm install- Public websites
+### 1. Clone and Install## 🚀 Quick Start
 
-```- SaaS applications
 
-- E-commerce sites
 
-### 2. Get Bot Token- Blogs & community platforms
+```bashUsers can visit your website directly and login with Telegram.
 
-1. Open Telegram and message [@BotFather](https://t.me/BotFather)- Any site that needs user authentication
+git clone https://github.com/MNDL-27/tg-controller.git
 
-2. Send `/newbot` and follow instructions
+cd tg-controller### 1. Install Dependencies
 
-3. Copy the bot token**User Flow:**
+npm install
 
-1. User visits `yoursite.com`
+``````bash**Perfect for:**
 
-### 3. Configure2. Clicks "Login with Telegram"
 
-```bash3. Authenticates via Telegram
 
-export BOT_TOKEN="your_bot_token_here"4. Returns to your site, logged in
+### 2. Get Telegram API Credentialsnpm install- Public websites
 
-export SESSION_SECRET="random_secret_key_here"
 
-```👉 **[See Website Integration Guide](WEBSITE_INTEGRATION.md)**
 
+1. Go to [https://my.telegram.org](https://my.telegram.org)```- SaaS applications
 
+2. Login with your phone number
 
-Or create `.env` file:### Option 2: Telegram Web App
+3. Go to "API development tools"- E-commerce sites
 
-```bash
+4. Create a new application
 
-BOT_TOKEN=your_bot_token_hereUsers access your app only through a Telegram bot.
+5. Copy your **API_ID** and **API_HASH**### 2. Get Bot Token- Blogs & community platforms
 
-SESSION_SECRET=random_secret_key_here
 
-```**Perfect for:**
 
-- Apps that live inside Telegram
+### 3. Configure Environment1. Open Telegram and message [@BotFather](https://t.me/BotFather)- Any site that needs user authentication
 
-### 4. Start Server- Telegram-exclusive services
 
-```bash- Bot companions
 
-npm start
+Create a `.env` file:2. Send `/newbot` and follow instructions
 
-```**User Flow:**
 
-1. User opens your Telegram bot
 
-Visit `http://localhost:3000` and you're ready!2. Clicks "Open App"
-
-3. App loads inside Telegram
-
-## 🌐 How It Works4. User logs in
-
-
-
-**User Flow:**Both options use the same backend and dashboard!
-
-```
-
-1. User visits your website## 📋 Prerequisites
-
-2. Clicks "Login with Telegram" button
-
-3. Telegram opens for authorization1. A Telegram bot (create one via [@BotFather](https://t.me/BotFather))
-
-4. User approves2. Node.js installed (v14 or higher)
-
-5. Returns to website logged in3. For website integration: Your own domain with HTTPS (or use ngrok for testing)
-
-6. Access dashboard and features
-
-```## Setup Instructions
-
-
-
-**Technical Flow:**### Step 1: Create a Telegram Bot
-
-```
-
-Frontend → Telegram Widget → User Approval → Callback with Data1. Open Telegram and search for [@BotFather](https://t.me/BotFather)
-
-       → Backend Verification (HMAC) → Session Created → Dashboard2. Send `/newbot` and follow the instructions to create a bot
-
-```3. **Copy the bot token** (format: `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`)
-
-4. **Copy the bot username** (e.g., `MyAwesomeBot`)
-
-## 📁 Project Structure
-
-### Step 1b: Configure for Website Integration (Option 1)
-
-```
-
-tg-controller/If you want to use Telegram login on your regular website:
-
-├── public/
-
-│   ├── login.html         # Login page with Telegram widget```
-
-│   └── dashboard.html     # User dashboard (protected)/setdomain in @BotFather
-
-├── server.js              # Express server with auth logic→ Select your bot
-
-├── package.json           # Dependencies→ Send your domain: yoursite.com
-
-└── README.md             # This file```
-
-```
-
-### Step 1c: Configure for Web App (Option 2)
-
-## 🔧 API Endpoints
-
-If you want users to access through a Telegram bot:
-
-### POST `/auth/telegram/verify`
-
-Verifies Telegram login and creates session.```
-
-/newapp in @BotFather
-
-**Request:**→ Select your bot
-
-```json→ Provide:
-
-{   - Title: "TG Controller"
-
-  "id": 123456789,   - Description: "Secure login system"
-
-  "first_name": "John",   - Photo: (optional)
-
-  "username": "johndoe",   - Web App URL: https://your-site.com/webapp
-
-  "auth_date": 1234567890,```
-
-  "hash": "abc123..."
-
-}### Step 2: Install Dependencies
-
-```
-
-```bash
-
-**Response:**npm install
-
-```json```
-
-{
-
-  "success": true,### Step 3: Configure Application
-
-  "user": {
-
-    "id": 123456789,#### Backend Configuration
-
-    "first_name": "John",Set your bot token as an environment variable:
-
-    "username": "johndoe"
-
-  }```bash
-
-}export BOT_TOKEN="your_bot_token_here"
-
-``````
-
-
-
-### GET `/api/user`Or create a `.env` file:
-
-Get current logged-in user.```bash
+```bash3. Copy the bot token**User Flow:**
 
 cp .env.example .env
 
-### POST `/api/logout`# Edit .env and add your token
-
-Logout and destroy session.```
+```1. User visits `yoursite.com`
 
 
 
-### GET `/api/health`#### Frontend Configuration (for Website Integration)
-
-Health check endpoint.Edit `public/login.html` and set your bot username:
+Edit `.env` and add your credentials:### 3. Configure2. Clicks "Login with Telegram"
 
 
 
-## 📄 Routes```javascript
+```bash```bash3. Authenticates via Telegram
 
-const BOT_USERNAME = 'MyAwesomeBot'; // Your bot username (without @)
+API_ID=your_api_id_here
 
-- `/` - Home (redirects to `/dashboard` if logged in, else `/login`)```
+API_HASH=your_api_hash_hereexport BOT_TOKEN="your_bot_token_here"4. Returns to your site, logged in
 
-- `/login` - Login page with Telegram widget
+PORT=3000
 
-- `/dashboard` - User dashboard (requires authentication)### Step 4: Run the Server
+SESSION_SECRET=your-random-secret-key-hereexport SESSION_SECRET="random_secret_key_here"
+
+```
+
+```👉 **[See Website Integration Guide](WEBSITE_INTEGRATION.md)**
+
+### 4. Start the Server
 
 
 
-## 🔐 Security```bash
+```bash
+
+npm startOr create `.env` file:### Option 2: Telegram Web App
+
+```
+
+```bash
+
+Visit **http://localhost:3000** and login with your phone number!
+
+BOT_TOKEN=your_bot_token_hereUsers access your app only through a Telegram bot.
+
+## 📱 How It Works
+
+SESSION_SECRET=random_secret_key_here
+
+### User Flow
+
+```**Perfect for:**
+
+1. **Login** → Enter phone number → Receive SMS code → Enter code (and 2FA if enabled)
+
+2. **Dashboard** → View all your bots from BotFather automatically- Apps that live inside Telegram
+
+3. **Bot Details** → Click any bot to see statistics, channels, groups, and activity
+
+4. **Monitor** → Start automatic monitoring to track real-time activity### 4. Start Server- Telegram-exclusive services
+
+5. **Manage** → Create new bots, view tokens, and manage all from one place
+
+```bash- Bot companions
+
+### Features in Detail
 
 npm start
 
-- ✅ HMAC-SHA256 signature verification```
+#### 📊 Bot Statistics
 
-- ✅ Timestamp validation (24-hour window)
+- Total users interacting with bot```**User Flow:**
 
-- ✅ Secure session cookies (httpOnly)For development with auto-reload:
+- Messages received and sent
 
-- ✅ Protected routes
+- Commands used1. User opens your Telegram bot
 
-- ✅ No password storage```bash
+- Channel posts made
 
-npm run dev
+- Files sentVisit `http://localhost:3000` and you're ready!2. Clicks "Open App"
 
-## 🎨 Customization```
+- Real-time activity tracking
+
+3. App loads inside Telegram
+
+#### 🏢 Channels & Groups
+
+- See all channels your bot is admin/member of## 🌐 How It Works4. User logs in
+
+- View all groups bot is in
+
+- Direct links to public channels/groups
+
+- Chat IDs and types
+
+**User Flow:**Both options use the same backend and dashboard!
+
+#### 📡 Automatic Monitoring
+
+- No code changes needed to your bots```
+
+- Monitors via Telegram's getUpdates API
+
+- Tracks channel posts, messages, files automatically1. User visits your website## 📋 Prerequisites
+
+- Works with any bot including third-party bots like TelDrive
+
+- Start/stop monitoring from web interface2. Clicks "Login with Telegram" button
 
 
 
-### Change Session Duration### Optional: Run Bot Script (Enhanced Experience)
+#### 🤖 Bot Management3. Telegram opens for authorization1. A Telegram bot (create one via [@BotFather](https://t.me/BotFather))
 
-Edit `server.js`:
+- Auto-fetch all bots from BotFather
 
-```javascriptThe `bot.js` file provides an optional bot interface with commands and buttons:
+- Import tokens automatically4. User approves2. Node.js installed (v14 or higher)
 
-maxAge: 7 * 24 * 60 * 60 * 1000 // Change 7 to your preferred days
+- Create new bots via BotFather
 
-``````bash
+- View and copy bot tokens5. Returns to website logged in3. For website integration: Your own domain with HTTPS (or use ngrok for testing)
 
-# Install the bot library
+- See bot profile photos
 
-### Customize Dashboardnpm install node-telegram-bot-api
+6. Access dashboard and features
 
-Edit `public/dashboard.html` - add your features and content.
+## 📁 Project Structure
 
-# Set your Web App URL
+```## Setup Instructions
+
+```
+
+tg-controller/
+
+├── public/
+
+│   ├── login-phone.html      # Phone authentication page**Technical Flow:**### Step 1: Create a Telegram Bot
+
+│   ├── bots.html              # Bot management dashboard
+
+│   └── bot-details.html       # Individual bot statistics & info```
+
+├── server.js                  # Express server with all logic
+
+├── bot-tracker.js             # SQLite activity tracking systemFrontend → Telegram Widget → User Approval → Callback with Data1. Open Telegram and search for [@BotFather](https://t.me/BotFather)
+
+├── bot-monitor.js             # Automatic monitoring system
+
+├── sessions/                  # Session storage (auto-created)       → Backend Verification (HMAC) → Session Created → Dashboard2. Send `/newbot` and follow the instructions to create a bot
+
+├── bot-activity.db           # SQLite database (auto-created)
+
+├── package.json              # Dependencies```3. **Copy the bot token** (format: `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`)
+
+├── .env                      # Your configuration (create this)
+
+└── README.md                 # This file4. **Copy the bot username** (e.g., `MyAwesomeBot`)
+
+```
+
+## 📁 Project Structure
+
+## 🔧 API Endpoints
+
+### Step 1b: Configure for Website Integration (Option 1)
+
+### Authentication
+
+- `POST /auth/phone/send-code` - Send verification code to phone```
+
+- `POST /auth/phone/verify-code` - Verify SMS code
+
+- `POST /auth/phone/verify-password` - Verify 2FA passwordtg-controller/If you want to use Telegram login on your regular website:
+
+- `POST /auth/logout` - Logout user
+
+- `GET /api/user` - Get current user info├── public/
+
+
+
+### Bot Management│   ├── login.html         # Login page with Telegram widget```
+
+- `GET /api/bots` - Get all user's bots
+
+- `GET /api/bots/fetch` - Fetch bots from BotFather│   └── dashboard.html     # User dashboard (protected)/setdomain in @BotFather
+
+- `POST /api/bots` - Add bot manually
+
+- `DELETE /api/bots/:botId` - Delete bot├── server.js              # Express server with auth logic→ Select your bot
+
+- `POST /api/bots/create` - Create new bot via BotFather
+
+├── package.json           # Dependencies→ Send your domain: yoursite.com
+
+### Bot Details
+
+- `GET /api/bots/:botId` - Get bot details└── README.md             # This file```
+
+- `GET /api/bots/:botId/stats` - Get bot statistics
+
+- `GET /api/bots/:botId/chats` - Get channels & groups bot is in```
+
+
+
+### Monitoring### Step 1c: Configure for Web App (Option 2)
+
+- `POST /api/bots/:botId/monitor/start` - Start monitoring bot
+
+- `POST /api/bots/:botId/monitor/stop` - Stop monitoring bot## 🔧 API Endpoints
+
+- `GET /api/monitor/status` - Get all monitoring status
+
+If you want users to access through a Telegram bot:
+
+### Activity Tracking
+
+- `POST /api/track/:botToken` - Log single activity### POST `/auth/telegram/verify`
+
+- `POST /api/track-batch/:botToken` - Log multiple activities
+
+Verifies Telegram login and creates session.```
+
+## 🗄️ Database
+
+/newapp in @BotFather
+
+The app uses **SQLite** (via better-sqlite3) to store bot activity:
+
+**Request:**→ Select your bot
+
+- **bot_activity** table - Stores all tracked activity (messages, channel posts, files, etc.)
+
+- **bot_stats_cache** table - Cached aggregated statistics```json→ Provide:
+
+- Automatic cleanup of old data (90 days by default)
+
+- Indexed for performance{   - Title: "TG Controller"
+
+- No external database setup needed
+
+  "id": 123456789,   - Description: "Secure login system"
+
+## 🔒 Security
+
+  "first_name": "John",   - Photo: (optional)
+
+- Phone number authentication via Telegram API (GramJS)
+
+- Secure session storage with 7-day expiry  "username": "johndoe",   - Web App URL: https://your-site.com/webapp
+
+- HMAC verification for Telegram data
+
+- Session-based authentication  "auth_date": 1234567890,```
+
+- No passwords stored
+
+- Environment variables for sensitive data  "hash": "abc123..."
+
+
+
+## 🐛 Troubleshooting}### Step 2: Install Dependencies
+
+
+
+### Can't login with phone number```
+
+- Make sure API_ID and API_HASH are correct from my.telegram.org
+
+- Check that your phone number starts with country code (e.g., +1234567890)```bash
+
+- Verify SMS code within a few minutes
+
+**Response:**npm install
+
+### Bots not showing up
+
+- Click "🔄 Fetch Bots from BotFather" button```json```
+
+- Make sure you own bots in BotFather
+
+- Check that bots have tokens available{
+
+
+
+### Monitoring not working  "success": true,### Step 3: Configure Application
+
+- Click "📡 Start Monitoring" button on bot details page
+
+- Bot must have valid token  "user": {
+
+- Bot needs to have recent activity to track
+
+- Check server console for errors    "id": 123456789,#### Backend Configuration
+
+
+
+### Sessions not persisting    "first_name": "John",Set your bot token as an environment variable:
+
+- Make sure SESSION_SECRET is set in .env
+
+- Check that ./sessions/ directory exists and is writable    "username": "johndoe"
+
+- Verify cookies are enabled in browser
+
+  }```bash
+
+## 🚀 Deployment
+
+}export BOT_TOKEN="your_bot_token_here"
+
+### Environment Variables Required
+
+``````
+
+```bash
+
+API_ID=your_api_id              # From my.telegram.org
+
+API_HASH=your_api_hash          # From my.telegram.org
+
+SESSION_SECRET=random_secret    # Generate a random string### GET `/api/user`Or create a `.env` file:
+
+PORT=3000                       # Optional, defaults to 3000
+
+```Get current logged-in user.```bash
+
+
+
+### Deploy to VPScp .env.example .env
+
+
+
+```bash### POST `/api/logout`# Edit .env and add your token
+
+# Install dependencies
+
+npm installLogout and destroy session.```
+
+
+
+# Install PM2 for process management
+
+npm install -g pm2
+
+### GET `/api/health`#### Frontend Configuration (for Website Integration)
+
+# Start server
+
+pm2 start server.js --name tg-controllerHealth check endpoint.Edit `public/login.html` and set your bot username:
+
+
+
+# Make it start on system boot
+
+pm2 startup
+
+pm2 save## 📄 Routes```javascript
+
+```
+
+const BOT_USERNAME = 'MyAwesomeBot'; // Your bot username (without @)
+
+### Deploy to Heroku
+
+- `/` - Home (redirects to `/dashboard` if logged in, else `/login`)```
+
+```bash
+
+heroku create your-app-name- `/login` - Login page with Telegram widget
+
+heroku config:set API_ID="your_api_id"
+
+heroku config:set API_HASH="your_api_hash"- `/dashboard` - User dashboard (requires authentication)### Step 4: Run the Server
+
+heroku config:set SESSION_SECRET="random_secret"
+
+git push heroku main
+
+```
+
+## 🔐 Security```bash
+
+### Deploy to Railway
+
+npm start
+
+```bash
+
+railway init- ✅ HMAC-SHA256 signature verification```
+
+railway add
+
+railway variables --set API_ID="your_api_id"- ✅ Timestamp validation (24-hour window)
+
+railway variables --set API_HASH="your_api_hash"
+
+railway variables --set SESSION_SECRET="random_secret"- ✅ Secure session cookies (httpOnly)For development with auto-reload:
+
+railway up
+
+```- ✅ Protected routes
+
+
+
+## 📦 Dependencies- ✅ No password storage```bash
+
+
+
+- **express** - Web frameworknpm run dev
+
+- **telegram** (GramJS) - Telegram MTProto client
+
+- **express-session** - Session management## 🎨 Customization```
+
+- **session-file-store** - File-based session storage
+
+- **better-sqlite3** - SQLite database
+
+- **node-fetch** - HTTP requests for bot monitoring
+
+- **dotenv** - Environment variables### Change Session Duration### Optional: Run Bot Script (Enhanced Experience)
+
+
+
+## 🎯 Use CasesEdit `server.js`:
+
+
+
+- Monitor multiple Telegram bots from one dashboard```javascriptThe `bot.js` file provides an optional bot interface with commands and buttons:
+
+- Track bot analytics (users, messages, commands)
+
+- Manage bot tokens and credentialsmaxAge: 7 * 24 * 60 * 60 * 1000 // Change 7 to your preferred days
+
+- View which channels/groups your bots are in
+
+- Create new bots quickly via BotFather``````bash
+
+- Monitor third-party bots (like TelDrive) without code access
+
+- Track channel posts and file uploads# Install the bot library
+
+
+
+## 📚 Resources### Customize Dashboardnpm install node-telegram-bot-api
+
+
+
+- [Telegram API Documentation](https://core.telegram.org/api)Edit `public/dashboard.html` - add your features and content.
+
+- [GramJS Documentation](https://gram.js.org/)
+
+- [Telegram Bot API](https://core.telegram.org/bots/api)# Set your Web App URL
+
+- [BotFather Commands](https://core.telegram.org/bots#6-botfather)
 
 ### Style Changesexport WEB_APP_URL="https://your-app-url.com"
 
+## 🤝 Contributing
+
 Modify CSS in `<style>` sections of HTML files.
+
+Feel free to open issues or submit pull requests!
 
 # Run the bot (in a separate terminal)
 
+## 📝 License
+
 ### Add Databasenpm run bot
+
+MIT
 
 Extend `server.js` to save user data to your database after verification.```
 
+---
 
+
+
+**Made with ❤️ for Telegram bot developers**
 
 ## 🚀 DeploymentThis provides users with:
 
