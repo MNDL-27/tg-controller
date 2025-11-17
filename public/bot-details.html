@@ -448,6 +448,36 @@
                 </div>
             </div>
 
+            <!-- Channels and Groups Section -->
+            <div class="updates-section" style="margin-bottom: 20px;">
+                <h3>🏢 Channels & Groups</h3>
+                <div id="chatsLoading" style="text-align: center; padding: 20px; color: #999;">
+                    Loading chats...
+                </div>
+                <div id="chatsContent" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                            <div style="font-size: 24px; font-weight: bold; color: #667eea;" id="channelCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Channels</div>
+                        </div>
+                        <div style="background: #f0fff4; padding: 15px; border-radius: 8px; border-left: 4px solid #48bb78;">
+                            <div style="font-size: 24px; font-weight: bold; color: #48bb78;" id="groupCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Groups</div>
+                        </div>
+                        <div style="background: #fef5e7; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12;">
+                            <div style="font-size: 24px; font-weight: bold; color: #f39c12;" id="totalChatsCount">0</div>
+                            <div style="color: #666; font-size: 14px;">Total Chats</div>
+                        </div>
+                    </div>
+                    <div id="chatsList"></div>
+                    <div id="noChats" style="text-align: center; padding: 30px; color: #999; display: none;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                        <div>No channels or groups found in recent updates</div>
+                        <div style="font-size: 13px; margin-top: 8px;">Add this bot to channels/groups or start monitoring to track them</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recent Updates -->
             <div class="updates-section">
                 <h3>📱 Recent Updates</h3>
@@ -494,6 +524,7 @@
                     currentBot = data.bot;
                     renderBot();
                     loadBotStats();
+                    loadBotChats();
                 } else {
                     showError(data.error || 'Bot not found');
                 }
@@ -776,6 +807,105 @@
         // Check monitoring status on load
         if (botId) {
             checkMonitorStatus();
+        }
+
+        async function loadBotChats() {
+            try {
+                const response = await fetch(`/api/bots/${botId}/chats`);
+                const data = await response.json();
+
+                document.getElementById('chatsLoading').style.display = 'none';
+                document.getElementById('chatsContent').style.display = 'block';
+
+                if (data.success && data.chats) {
+                    const chats = data.chats;
+                    
+                    // Update counters
+                    document.getElementById('channelCount').textContent = chats.channelCount;
+                    document.getElementById('groupCount').textContent = chats.groupCount;
+                    document.getElementById('totalChatsCount').textContent = chats.total;
+
+                    // Render chats list
+                    if (chats.total === 0) {
+                        document.getElementById('noChats').style.display = 'block';
+                        document.getElementById('chatsList').style.display = 'none';
+                    } else {
+                        document.getElementById('noChats').style.display = 'none';
+                        document.getElementById('chatsList').style.display = 'block';
+                        renderChatsList(chats);
+                    }
+                } else {
+                    console.error('Failed to load chats:', data.error);
+                    document.getElementById('chatsContent').innerHTML = 
+                        '<div style="text-align: center; padding: 20px; color: #999;">Failed to load chats</div>';
+                }
+            } catch (error) {
+                console.error('Load chats error:', error);
+                document.getElementById('chatsLoading').style.display = 'none';
+                document.getElementById('chatsContent').innerHTML = 
+                    '<div style="text-align: center; padding: 20px; color: #999;">Error loading chats</div>';
+                document.getElementById('chatsContent').style.display = 'block';
+            }
+        }
+
+        function renderChatsList(chats) {
+            const chatsList = document.getElementById('chatsList');
+            let html = '';
+
+            // Render channels
+            if (chats.channels.length > 0) {
+                html += '<div style="margin-bottom: 20px;"><h4 style="color: #667eea; margin-bottom: 10px; font-size: 16px;">📢 Channels</h4>';
+                chats.channels.forEach(chat => {
+                    html += renderChatItem(chat, '📢', '#667eea');
+                });
+                html += '</div>';
+            }
+
+            // Render groups
+            if (chats.groups.length > 0) {
+                html += '<div style="margin-bottom: 20px;"><h4 style="color: #48bb78; margin-bottom: 10px; font-size: 16px;">👥 Groups</h4>';
+                chats.groups.forEach(chat => {
+                    html += renderChatItem(chat, '👥', '#48bb78');
+                });
+                html += '</div>';
+            }
+
+            // Render private chats (if any)
+            if (chats.private.length > 0) {
+                html += '<div style="margin-bottom: 20px;"><h4 style="color: #f39c12; margin-bottom: 10px; font-size: 16px;">💬 Private Chats</h4>';
+                chats.private.forEach(chat => {
+                    html += renderChatItem(chat, '💬', '#f39c12');
+                });
+                html += '</div>';
+            }
+
+            chatsList.innerHTML = html;
+        }
+
+        function renderChatItem(chat, icon, color) {
+            const chatLink = chat.username ? `https://t.me/${chat.username}` : '#';
+            const hasLink = chat.username ? true : false;
+            
+            return `
+                <div class="update-item" style="align-items: center;">
+                    <div class="update-icon" style="background: ${color}15; color: ${color}; font-size: 24px;">
+                        ${icon}
+                    </div>
+                    <div class="update-content" style="flex: 1;">
+                        <div class="update-type">${chat.title}</div>
+                        <div class="update-text" style="display: flex; gap: 10px; align-items: center;">
+                            ${chat.username ? `<span style="color: ${color};">@${chat.username}</span>` : '<span style="color: #999;">Private chat</span>'}
+                            <span style="color: #ccc;">•</span>
+                            <span style="color: #999; font-size: 12px;">ID: ${chat.id}</span>
+                        </div>
+                    </div>
+                    ${hasLink ? `
+                        <a href="${chatLink}" target="_blank" style="padding: 8px 16px; background: ${color}; color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600;">
+                            Open
+                        </a>
+                    ` : ''}
+                </div>
+            `;
         }
     </script>
 </body>

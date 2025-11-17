@@ -835,6 +835,103 @@ app.get('/api/bots/:botId/stats', async (req, res) => {
     }
 });
 
+// Get bot's channels and groups
+app.get('/api/bots/:botId/chats', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            error: 'Not logged in'
+        });
+    }
+
+    const { botId } = req.params;
+    const bots = req.session.bots || [];
+    const bot = bots.find(b => b.id === botId);
+
+    if (!bot || !bot.token) {
+        return res.json({
+            success: false,
+            error: 'Bot not found or no token available'
+        });
+    }
+
+    try {
+        // Fetch updates to find chats the bot is in
+        const updatesResponse = await fetch(`https://api.telegram.org/bot${bot.token}/getUpdates?limit=100`);
+        const updatesData = await updatesResponse.json();
+
+        if (!updatesData.ok) {
+            return res.json({
+                success: false,
+                error: 'Failed to fetch bot updates'
+            });
+        }
+
+        const updates = updatesData.result || [];
+        const chatsMap = new Map();
+
+        // Extract unique chats from updates
+        updates.forEach(update => {
+            let chat = null;
+            
+            if (update.message) {
+                chat = update.message.chat;
+            } else if (update.channel_post) {
+                chat = update.channel_post.chat;
+            } else if (update.edited_channel_post) {
+                chat = update.edited_channel_post.chat;
+            } else if (update.callback_query && update.callback_query.message) {
+                chat = update.callback_query.message.chat;
+            } else if (update.my_chat_member) {
+                chat = update.my_chat_member.chat;
+            }
+
+            if (chat) {
+                const chatId = chat.id.toString();
+                if (!chatsMap.has(chatId)) {
+                    chatsMap.set(chatId, {
+                        id: chat.id,
+                        title: chat.title || chat.first_name || 'Unknown',
+                        type: chat.type, // private, group, supergroup, channel
+                        username: chat.username || null,
+                        isChannel: chat.type === 'channel',
+                        isGroup: chat.type === 'group' || chat.type === 'supergroup',
+                        isPrivate: chat.type === 'private'
+                    });
+                }
+            }
+        });
+
+        const chats = Array.from(chatsMap.values());
+        
+        // Separate into categories
+        const channels = chats.filter(c => c.isChannel);
+        const groups = chats.filter(c => c.isGroup);
+        const privateChats = chats.filter(c => c.isPrivate);
+
+        res.json({
+            success: true,
+            chats: {
+                all: chats,
+                channels: channels,
+                groups: groups,
+                private: privateChats,
+                total: chats.length,
+                channelCount: channels.length,
+                groupCount: groups.length,
+                privateCount: privateChats.length
+            }
+        });
+
+    } catch (error) {
+        console.error('Get bot chats error:', error);
+        res.json({
+            success: false,
+            error: error.message || 'Failed to fetch bot chats'
+        });
+    }
+});
+
 // Track bot activity - This endpoint is called by your bot
 app.post('/api/track/:botToken', (req, res) => {
     try {
