@@ -12,6 +12,7 @@ const botMonitor = require('./bot-monitor');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const DEBUG = process.env.DEBUG === 'true';
 
 // Telegram API credentials (get from https://my.telegram.org)
 const API_ID = parseInt(process.env.API_ID || '0');
@@ -19,6 +20,21 @@ const API_HASH = process.env.API_HASH || '';
 
 // Store active auth sessions temporarily
 const authSessions = new Map();
+
+// Debug logging middleware
+if (DEBUG) {
+    app.use((req, res, next) => {
+        console.log(`\n🔍 [${new Date().toISOString()}] ${req.method} ${req.url}`);
+        console.log('   Headers:', JSON.stringify(req.headers, null, 2));
+        if (req.body && Object.keys(req.body).length > 0) {
+            console.log('   Body:', JSON.stringify(req.body, null, 2));
+        }
+        if (req.session && req.session.user) {
+            console.log('   Session User:', req.session.user.firstName || req.session.user.id);
+        }
+        next();
+    });
+}
 
 // Middleware
 app.use(express.json());
