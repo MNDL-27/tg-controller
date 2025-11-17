@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bots - TG Controller</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/js/utils.js" as="script">
+    <link rel="preload" href="/css/styles.css" as="style">
+    
+    <!-- Optimized global styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+    
     <style>
         * {
             margin: 0;
@@ -441,24 +449,28 @@
         </div>
     </div>
 
+    <!-- Optimized utilities -->
+    <script src="/js/utils.js"></script>
+    
     <script>
         let userBots = [];
 
+        // Use optimized toast instead of custom status
         function showStatus(message, type) {
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = message;
-            statusEl.className = `status ${type}`;
-            statusEl.style.display = 'block';
-            
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, 3000);
+            const typeMap = {
+                'success': 'success',
+                'error': 'error',
+                'loading': 'info'
+            };
+            showToast(message, typeMap[type] || 'info');
         }
 
+        // Use cached fetch for user data
         async function loadUserData() {
             try {
-                const response = await fetch('/api/user');
-                const data = await response.json();
+                showSpinner('botsGrid', 'Loading your bots...');
+                const data = await cachedFetch('/api/user');
+
 
                 if (data.loggedIn && data.user) {
                     const user = data.user;
